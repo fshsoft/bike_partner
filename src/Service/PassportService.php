@@ -2,8 +2,8 @@
 
 namespace Bike\Partner\Service;
 
-use Bike\Common\Exception\Debug\DebugException;
-use Bike\Common\Service\AbstractService;
+use Bike\Partner\Exception\Debug\DebugException;
+use Bike\Partner\Service\AbstractService;
 
 class PassportService extends AbstractService
 {

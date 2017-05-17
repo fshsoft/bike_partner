@@ -1,17 +1,17 @@
 <?php
 
-namespace Bike\Partner\Db\Partner;
+namespace Bike\Partner\Db\Primary;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 use Bike\Partner\Db\AbstractDao;
 
-class PassportDao extends AbstractDao
+class BikeDao extends AbstractDao
 {
     protected function parseTable($cond, $dbOp)
     {
-        return "`{$this->db}`.`{$this->prefix}passport`";
+        return "`{$this->db}`.`{$this->prefix}bike`";
     }
 
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)

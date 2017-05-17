@@ -55,7 +55,7 @@
         },
         "bike/common": {
             "type": "vcs",
-            "url": "https://github.com/fshsoft/bike_common.git"
+            "url": "git@github.com:fshsoft/bike_common.git"
         }
     },
     "extra": {

@@ -2,7 +2,7 @@
 
 namespace Bike\Partner\Db\Partner;
 
-use Bike\Common\Db\AbstractEntity;
+use Bike\Partner\Db\AbstractEntity;
 
 class Passport extends AbstractEntity
 {

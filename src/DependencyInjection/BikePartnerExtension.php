@@ -11,7 +11,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\DependencyInjection\Definition;
 
-use Bike\Common\Exception\Debug\DebugException;
+use Bike\Partner\Exception\Debug\DebugException;
 
 class BikePartnerExtension extends Extension implements PrependExtensionInterface
 {
