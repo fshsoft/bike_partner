@@ -3,10 +3,33 @@
 namespace Bike\Partner\Service;
 
 use Bike\Partner\Exception\Debug\DebugException;
+use Bike\Partner\Exception\Logic\LogicException;
 use Bike\Partner\Service\AbstractService;
+use Bike\Partner\Util\ArgUtil;
+use Bike\Partner\Db\Partner\Passport;
 
 class PassportService extends AbstractService
 {
+    public function createPassport(array $data)
+    {
+        $data = ArgUtil::getArgs($data, array(
+            'username',
+            'pwd',
+            'repwd',
+            'role',
+            'create_time',
+        ));
+        $this->validateUsername($data['username']);
+        $this->validatePassword($data['pwd'], $data['repwd']);
+        $this->validateRole($data['role']);
+        if (!$data['create_time']) {
+            $data['create_time'] = time();
+        }
+        $data['pwd'] = $this->hashPassword($data['pwd']);
+        $passportDao = $this->getPassportDao();
+        $passportDao->create($data);
+    }
+
     public function getPassport($id)
     {
         $key = $this->getPassportRequestCacheKey('id', $id);
@@ -35,6 +58,16 @@ class PassportService extends AbstractService
         return $passport;
     }
 
+    public function hashPassword($password)
+    {
+        $options = [
+            'cost' => 10,
+            'salt' => mcrypt_create_iv(22, MCRYPT_DEV_URANDOM),
+        ];
+
+        return  password_hash($password, PASSWORD_BCRYPT, $options);
+    }
+
     protected function getPassportRequestCacheKey($type, $value)
     {
         switch ($type) {
@@ -43,6 +76,53 @@ class PassportService extends AbstractService
                 return 'passport.' . $type . '.' . $value;
         }
         throw new DebugException('非法的passport request cache key');
+    }
+
+    protected function validateUsername($username)
+    {
+        if (!$username) {
+            throw new LogicException('用户名不能为空');
+        }
+        if (!preg_match('/^[a-zA-Z_][a-zA-Z0-9_]{5,18}/', $username)) {
+            throw new LogicException('用户名只能是字母，数字或者下划线，首字符不能为数字，长度为6-19个字符');
+        }
+        $passport = $this->getPassportByUsername($username);
+        if ($passport) {
+            throw new LogicException('用户名已存在');
+        }
+    }
+
+    protected function validatePassword($password, $repassword = null)
+    {
+        if (!$password) {
+            throw new LogicException('密码不能为空');
+        }
+
+        $len = strlen($password);
+        if ($len < 6) {
+            throw new LogicException('密码长度最少6位');
+        } elseif ($len > 16) {
+            throw new LogicException('密码长度最多16位');
+        }
+
+        if ($repassword !== null) {
+            if ($password !== $repassword) {
+                throw new LogicException('两次输入的密码不一致');
+            }
+        }
+    }
+
+    protected function validateRole($role)
+    {
+        switch ($role) {
+            case Passport::ROLE_ADMIN:
+            case Passport::ROLE_CS_STAFF:
+            case Passport::ROLE_AGENT:
+            case Passport::ROLE_CLIENT:
+                return;
+            default:
+                throw new LogicException('用户角色不合法');
+        }
     }
 
     protected function getPassportDao()

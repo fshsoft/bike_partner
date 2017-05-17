@@ -18,8 +18,8 @@ class Passport extends AbstractEntity
         'username' => null,
         'pwd' => null,
         'role' => null,
-        'last_login_ip' => null,
-        'last_login_time' => null,
+        'last_login_ip' => '',
+        'last_login_time' => 0,
         'create_time' => null,
     );
 }
