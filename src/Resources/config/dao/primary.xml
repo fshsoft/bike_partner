@@ -11,8 +11,8 @@
         <service id="bike.partner.dao.primary.user" class="%bike.partner.dao.primary.user.class%">
             <argument type="service" id="bike.partner.params.dao.primary.conn_id"/>
             <argument>%bike.partner.params.dao.primary.db_name%</argument>
-            <argument>%bike.partner..params.dao.primary.prefix%</argument>
+            <argument>%bike.partner.params.dao.primary.prefix%</argument>
             <argument>Bike\Partner\Db\Primary\User</argument>
         </service>
     </services>
-</continer>
+</container>

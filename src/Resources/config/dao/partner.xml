@@ -11,8 +11,8 @@
         <service id="bike.partner.dao.partner.passport" class="%bike.partner.dao.partner.passport.class%">
             <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
             <argument>%bike.partner.params.dao.partner.db_name%</argument>
-            <argument>%bike.partner..params.dao.partner.prefix%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
             <argument>Bike\Partner\Db\Partner\Passport</argument>
         </service>
     </services>
-</continer>
+</container>
