@@ -6,10 +6,38 @@
 
     <parameters>
         <parameter key="bike.partner.service.passport.class">Bike\Partner\Service\PassportService</parameter>
+        <parameter key="bike.partner.service.admin.class">Bike\Partner\Service\AdminService</parameter>
+        <parameter key="bike.partner.service.agent.class">Bike\Partner\Service\AgentService</parameter>
+        <parameter key="bike.partner.service.cs_staff.class">Bike\Partner\Service\CsStaffService</parameter>
+        <parameter key="bike.partner.service.client.class">Bike\Partner\Service\ClientService</parameter>
     </parameters>
 
     <services>
         <service id="bike.partner.service.passport" class="%bike.partner.service.passport.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="bike.partner.service.admin" class="%bike.partner.service.admin.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="bike.partner.service.agent" class="%bike.partner.service.agent.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="bike.partner.service.cs_staff" class="%bike.partner.service.cs_staff.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="bike.partner.service.client" class="%bike.partner.service.client.class%">
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
