@@ -15,13 +15,15 @@ class User extends Passport implements UserInterface
 
     public function getRoles()
     {
-        switch ($this->getCol('type')) {
+        switch ($this->getCol('role')) {
             case Passport::ROLE_ADMIN:
                 return array('ROLE_ADMIN');
-            case Passport::ROLE_YUNWEI:
-                return array('ROLE_YUNWEI');
-            case Passport::ROLE_YIYUAN:
-                return array('ROLE_YIYUAN');
+            case Passport::ROLE_CS_STAFF:
+                return array('ROLE_CS_STAFF');
+            case Passport::ROLE_AGENT:
+                return array('ROLE_AGENT');
+            case Passport::ROLE_CLIENT:
+                return array('ROLE_CLIENT');
         }
         return array();
     }

@@ -7,8 +7,9 @@ use Bike\Partner\Db\AbstractEntity;
 class Passport extends AbstractEntity
 {
     const ROLE_ADMIN = 1;
-    const ROLE_YUNWEI = 2;
-    const ROLE_YIYUAN = 3;
+    const ROLE_CS_STAFF = 2;
+    const ROLE_AGENT = 3;
+    const ROLE_CLIENT = 4;
 
     protected static $pk = 'id';
 

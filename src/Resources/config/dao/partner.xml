@@ -5,6 +5,11 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
         <parameter key="bike.partner.dao.partner.passport.class">Bike\Partner\Db\Partner\PassportDao</parameter>
+        <parameter key="bike.partner.dao.partner.admin.class">Bike\Partner\Db\Partner\AdminDao</parameter>
+        <parameter key="bike.partner.dao.partner.admin_privilege.class">Bike\Partner\Db\Partner\AdminPrivilegeDao</parameter>
+        <parameter key="bike.partner.dao.partner.agent.class">Bike\Partner\Db\Partner\AgentDao</parameter>
+        <parameter key="bike.partner.dao.partner.cs_staff.class">Bike\Partner\Db\Partner\CsStaffDao</parameter>
+        <parameter key="bike.partner.dao.partner.client.class">Bike\Partner\Db\Partner\ClientDao</parameter>
     </parameters>
 
     <services>
@@ -13,6 +18,41 @@
             <argument>%bike.partner.params.dao.partner.db_name%</argument>
             <argument>%bike.partner.params.dao.partner.prefix%</argument>
             <argument>Bike\Partner\Db\Partner\Passport</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.admin" class="%bike.partner.dao.partner.admin.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\Admin</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.admin_privilege" class="%bike.partner.dao.partner.admin_privilege.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\AdminPrivilege</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.agent" class="%bike.partner.dao.partner.agent.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\Agent</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.cs_staff" class="%bike.partner.dao.partner.cs_staff.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\CsStaff</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.client" class="%bike.partner.dao.partner.client.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\Client</argument>
         </service>
     </services>
 </container>
