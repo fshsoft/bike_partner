@@ -13,10 +13,10 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="/vendor/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="/dashboard/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="/css/AdminLTE.min.css">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-  <link rel="stylesheet" href="/dashboard/css/skins/_all-skins.min.css">
+  <link rel="stylesheet" href="/css/skins/_all-skins.min.css">
   <!-- iCheck -->
   <link rel="stylesheet" href="/vendor/iCheck/flat/blue.css">
   <!-- Morris chart -->
@@ -42,11 +42,11 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="{{ path('dashboard_home') }}" class="logo">
+    <a href="{{ path('home') }}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>综</b></span>
+      <span class="logo-mini"><b>百宝</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>综合素养</b></span>
+      <span class="logo-lg"><b>百宝单车合伙人平台</b></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -71,7 +71,7 @@
                   <li><!-- start message -->
                     <a href="#">
                       <div class="pull-left">
-                        <img src="/dashboard/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                        <img src="/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Support Team
@@ -84,7 +84,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="/dashboard/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="/img/user3-128x128.jpg" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         AdminLTE Design Team
@@ -96,7 +96,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="/dashboard/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="/img/user4-128x128.jpg" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Developers
@@ -108,7 +108,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="/dashboard/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="/img/user3-128x128.jpg" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Sales Department
@@ -120,7 +120,7 @@
                   <li>
                     <a href="#">
                       <div class="pull-left">
-                        <img src="/dashboard/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                        <img src="/img/user4-128x128.jpg" class="img-circle" alt="User Image">
                       </div>
                       <h4>
                         Reviewers
@@ -253,13 +253,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="/dashboard/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="/img/user2-160x160.jpg" class="user-image" alt="User Image">
               <span class="hidden-xs">Alexander Pierce</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="/dashboard/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p>
                   Alexander Pierce - Web Developer
@@ -307,7 +307,7 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="/dashboard/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>Alexander Pierce</p>
@@ -336,22 +336,9 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{ path('dashboard_teacher') }}"><i class="fa fa-circle-o"></i> 老师</a></li>
-            <li><a href="{{ path('dashboard_student') }}"><i class="fa fa-circle-o"></i> 学生</a></li>
-            <li><a href="{{ path('dashboard_patriarch') }}"><i class="fa fa-circle-o"></i> 家长</a></li>
-            <li><a href="{{ path('dashboard_admin') }}"><i class="fa fa-circle-o"></i> 管理员</a></li>
-          </ul>
-        </li>
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-book"></i> <span>班级管理</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li class=""><a href="index.html"><i class="fa fa-circle-o"></i> 年级</a></li>
-            <li><a href="index2.html"><i class="fa fa-circle-o"></i> 班级</a></li>
+            <li><a href=""><i class="fa fa-circle-o"></i> 运维合伙人</a></li>
+            <li><a href=""><i class="fa fa-circle-o"></i> 一元合伙人合伙人</a></li>
+            <li><a href=""><i class="fa fa-circle-o"></i> 管理员</a></li>
           </ul>
         </li>
       </ul>
@@ -602,10 +589,10 @@
 <!-- FastClick -->
 <script src="/vendor/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
-<script src="/dashboard/js/app.min.js"></script>
+<script src="/js/app.min.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="/dashboard/js/pages/dashboard.js"></script>
+<script src="/js/pages/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="/dashboard/js/demo.js"></script>
+<script src="/js/demo.js"></script>
 </body>
 </html>

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 /**
  * @Route("/")
  */
-class IndexController extends AbstractDashboardController
+class IndexController extends AbstractController
 {
     /**
      * @Route("/", name="home")
