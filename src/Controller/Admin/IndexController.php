@@ -25,4 +25,13 @@ class IndexController extends AbstractController
     {
         return array();
     }
+
+    /**
+     * @Route("/new", name="admin_new")
+     * @Template("BikePartnerBundle:admin/index:new.html.twig")
+     */
+    public function newAction(Request $request)
+    {
+        return array();
+    }
 }
