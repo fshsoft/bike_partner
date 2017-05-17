@@ -32,6 +32,16 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        if ($this->isMethod('post')) {
+            $data = $request->request->all();
+            $adminService = $this->get('bike.partner.service.admin');
+            try {
+                $adminService->createAdmin($data);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
         return array();
     }
 }
