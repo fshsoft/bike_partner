@@ -23,7 +23,10 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        return array();
+        $adminService = $this->get('bike.partner.service.admin');
+        $page = $request->query->get('p');
+        $pageNum = 10;
+        return $adminService->searchAdmin($request->query->all(), $page, $pageNum);
     }
 
     /**

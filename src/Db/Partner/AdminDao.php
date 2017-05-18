@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 use Bike\Partner\Db\AbstractDao;
+use Bike\Partner\Util\ArgUtil;
 
 class AdminDao extends AbstractDao
 {
@@ -16,7 +17,12 @@ class AdminDao extends AbstractDao
 
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)
     {
-
+        $where = ArgUtil::getArgs($where, array(
+            'id', 
+        ));
+        if ($where['id']) {
+            $qb->andWhere('id = ' . $qb->createNamedParameter($where['id']));
+        }
     }
 
     protected function applyOrder(QueryBuilder $qb, array $order)

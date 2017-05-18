@@ -58,6 +58,21 @@ class PassportService extends AbstractService
         return $passport;
     }
 
+    public function getPassportMapByIds($cols, array $ids)
+    {
+        $passportDao = $this->getPassportDao();
+        $list = $passportDao->findList($cols, array(
+            'id.in' => $ids,
+        ), 0, 0);
+        if ($list) {
+            $map = array();
+            foreach ($list as $v) {
+                $map[$v->getId()] = $v;
+            }
+            return $map;
+        }
+    }
+
     public function hashPassword($password)
     {
         $options = [

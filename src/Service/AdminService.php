@@ -42,6 +42,69 @@ class AdminService extends AbstractService
         }
     }
 
+    public function getAdmin($id)
+    {
+        $key = 'admin.' . $id;
+        $admin = $this->getRequestCache($key);
+        if (!$admin) {
+            $adminDao = $this->getAdminDao();
+            $admin = $adminDao->find($id);
+            if ($admin) {
+                $this->setRequestCache($key, $admin);
+            }
+        }
+        return $admin;
+    }
+
+    public function searchAdmin(array $args, $page, $pageNum)
+    {
+        $page = intval($page);
+        $pageNum = intval($pageNum);
+        if ($page < 1) {
+            $page = 1;
+        }
+        if ($pageNum < 1) {
+            $pageNum = 1;
+        }
+        $offset = ($page - 1) * $pageNum;
+        $adminDao = $this->getAdminDao();
+        $adminList = $adminDao->findList('*', array(), $offset, $pageNum);
+        if ($adminList) {
+            $passportIds = array();
+            foreach ($adminList as $v) {
+                $passportIds[] = $v->getId();
+            }
+            $passportService = $this->container->get('bike.partner.service.passport');
+            $passportMap = $passportService->getPassportMapByIds('', $passportIds);
+        } else {
+            $passportMap = array();
+            $adminList = array();
+        }
+        $total = $adminDao->findNum(array());
+        if ($total) {
+            $totalPage = ceil($total / $pageNum);
+            if ($page > $totalPage) {
+                $page = $totalPage;
+            }
+        } else {
+            $totalPage = 1;
+            $page = 1;
+        }
+
+        return array(
+            'page' => $page,
+            'totalPage' => $totalPage,
+            'pageNum' => $pageNum,
+            'total' => $total,
+            'list' => array(
+                'admin' => $adminList,
+            ),
+            'map' => array(
+                'passport' => $passportMap,
+            ),
+        );
+    }
+
     protected function validateName($name)
     {
         if (!$name) {

@@ -19,9 +19,13 @@ class PassportDao extends AbstractDao
     {
         $where = ArgUtil::getArgs($where, array(
             'username',
+            'id.in',
         ));
         if ($where['username']) {
             $qb->andWhere('username = ' . $qb->createNamedParameter($where['username']));
+        }
+        if ($where['id.in']) {
+            $qb->andWhere('id IN (' . $qb->createNamedParameter($where['id.in'], Connection::PARAM_INT_ARRAY) . ')');
         }
     }
 
