@@ -338,3 +338,7 @@
 
   }
 })(jQuery, $.AdminLTE);
+$(".treeview-menu li").click(function(){
+    $(this).children().addClass("active")
+    alert(1)
+})
