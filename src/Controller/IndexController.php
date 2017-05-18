@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
+use Bike\Partner\Db\Partner\Passport;
+
 /**
  * @Route("/")
  */
@@ -32,5 +34,21 @@ class IndexController extends AbstractController
     public function loginAction(Request $request)
     {
         return array();
+    }
+
+    /**
+     * @Route("/test")
+     */
+    public function testAction(Request $request)
+    {
+        $adminService = $this->get('bike.partner.service.admin');
+        $data = array(
+            'name' => '管理员',
+            'username' => 'ethantsien',
+            'pwd' => '789789',
+            'repwd' => '789789',
+            'type' => Passport::TYPE_ADMIN,
+        );
+        $adminService->createAdmin($data);
     }
 }

@@ -12,7 +12,7 @@ class User extends Passport implements UserInterface
         Passport::TYPE_ADMIN => 'ROLE_ADMIN',
         Passport::TYPE_CS_STAFF => 'ROLE_CS_STAFF',
         Passport::TYPE_AGENT => 'ROLE_AGENT',
-        Passport::TYPE_CLIENT = > 'ROLE_CLIENT',
+        Passport::TYPE_CLIENT => 'ROLE_CLIENT',
     );
 
     public function getId()

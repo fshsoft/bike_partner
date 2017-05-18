@@ -6,13 +6,18 @@ use Bike\Partner\Exception\Debug\DebugException;
 use Bike\Partner\Exception\Logic\LogicException;
 use Bike\Partner\Service\AbstractService;
 use Bike\Partner\Util\ArgUtil;
+use Bike\Partner\Db\Partner\Admin;
 
 class AdminService extends AbstractService
 {
     public function createAdmin(array $data)
     {
         $data = ArgUtil::getArgs($data, array(
-            'name'
+            'name',
+            'username',
+            'pwd',
+            'repwd',
+            'type',
         ));
         $this->validateName($data['name']);
         $adminDao = $this->getAdminDao();
@@ -23,13 +28,16 @@ class AdminService extends AbstractService
         $adminConn->beginTransaction();
         $passportConn->beginTransaction();
         try {
-            $adminDao->create($data);
-            $passportService->createPassport($data);
-            $adminConn->commit();
+            $passportId = $passportService->createPassport($data);
+            $admin = new Admin($data);
+            $admin->setId($passportId);
+            $adminDao->create($admin);
+
             $passportConn->commit();
+            $adminConn->commit();
         } catch (\Exception $e) {
-            $adminConn->rollBack();
             $passportConn->rollBack();
+            $adminConn->rollBack();
             throw $e;
         }
     }

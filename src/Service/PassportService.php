@@ -27,7 +27,7 @@ class PassportService extends AbstractService
         }
         $data['pwd'] = $this->hashPassword($data['pwd']);
         $passportDao = $this->getPassportDao();
-        $passportDao->create($data);
+        return $passportDao->create($data, true);
     }
 
     public function getPassport($id)
@@ -76,6 +76,12 @@ class PassportService extends AbstractService
                 return 'passport.' . $type . '.' . $value;
         }
         throw new DebugException('非法的passport request cache key');
+    }
+
+    protected function setPassportRequestCache(Passport $passport)
+    {
+        $this->setRequestCache($this->getPassportRequestCacheKey('id', $passport->getId()), $passport);
+        $this->setRequestCache($this->getPassportRequestCacheKey('username', $passport->getUsername()), $passport);
     }
 
     protected function validateUsername($username)
