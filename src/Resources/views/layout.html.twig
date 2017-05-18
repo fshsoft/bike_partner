@@ -304,6 +304,16 @@
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
+{% set role = app.user.getRole() %}
+{% if role == 'ROLE_ADMIN' %}
+{{ include('BikePartnerBundle:sidebar:admin.html.twig') }} 
+{% elseif role == 'ROLE_CS_STAFF' %}
+{{ include('BikePartnerBundle:sidebar:cs_staff.html.twig') }} 
+{% elseif role == 'ROLE_AGENT' %}
+{{ include('BikePartnerBundle:sidebar:agent.html.twig') }} 
+{% elseif role == 'ROLE_CLIENT' %}
+{{ include('BikePartnerBundle:sidebar:client.html.twig') }} 
+{% endif %}
     </section>
     <!-- /.sidebar -->
   </aside>

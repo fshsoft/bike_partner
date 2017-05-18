@@ -8,37 +8,31 @@ use Bike\Partner\Db\Partner\Passport;
 
 class User extends Passport implements UserInterface
 {
+    protected $roleMap = array(
+        Passport::TYPE_ADMIN => 'ROLE_ADMIN',
+        Passport::TYPE_CS_STAFF => 'ROLE_CS_STAFF',
+        Passport::TYPE_AGENT => 'ROLE_AGENT',
+        Passport::TYPE_CLIENT = > 'ROLE_CLIENT',
+    );
+
     public function getId()
     {
         return $this->getCol('id');
     }
 
-    public function getRoleName()
+    public function getRole()
     {
-
-    }
-
-    public function getRoleId()
-    {
-
-    }
-
-    public function getRoleCode()
-    {
-
+        $type = $this->getCol('type');
+        if (isset($this->roleMap[$type])) {
+            return $this->roleMap[$type];
+        }
     }
 
     public function getRoles()
     {
-        switch ($this->getCol('role')) {
-            case Passport::ROLE_ADMIN:
-                return array('ROLE_ADMIN');
-            case Passport::ROLE_CS_STAFF:
-                return array('ROLE_CS_STAFF');
-            case Passport::ROLE_AGENT:
-                return array('ROLE_AGENT');
-            case Passport::ROLE_CLIENT:
-                return array('ROLE_CLIENT');
+        $role = $this->getRole();
+        if ($role) {
+            return array($role);
         }
         return array();
     }

@@ -16,12 +16,12 @@ class PassportService extends AbstractService
             'username',
             'pwd',
             'repwd',
-            'role',
+            'type',
             'create_time',
         ));
         $this->validateUsername($data['username']);
         $this->validatePassword($data['pwd'], $data['repwd']);
-        $this->validateRole($data['role']);
+        $this->validateType($data['type']);
         if (!$data['create_time']) {
             $data['create_time'] = time();
         }
@@ -112,16 +112,16 @@ class PassportService extends AbstractService
         }
     }
 
-    protected function validateRole($role)
+    protected function validateType($type)
     {
-        switch ($role) {
-            case Passport::ROLE_ADMIN:
-            case Passport::ROLE_CS_STAFF:
-            case Passport::ROLE_AGENT:
-            case Passport::ROLE_CLIENT:
+        switch ($type) {
+            case Passport::TYPE_ADMIN:
+            case Passport::TYPE_CS_STAFF:
+            case Passport::TYPE_AGENT:
+            case Passport::TYPE_CLIENT:
                 return;
             default:
-                throw new LogicException('用户角色不合法');
+                throw new LogicException('用户类型不合法');
         }
     }
 
