@@ -1,3 +1,6 @@
 bike_partner:
     resource: "@BikePartnerBundle/Controller/"
     type: "annotation"
+
+logout:
+    path: /logout
