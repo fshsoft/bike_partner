@@ -46,6 +46,10 @@
               </tbody></table>
             </div>
             <!-- /.box-body -->
+            <div class="box-footer clearfix">
+{% import 'BikePartnerBundle::paginator.macro.twig' as paginator %}
+{{ paginator.paginate(page, totalPage, 5, 'admin', app.request.query.all(), ['pull-right']) }}
+            </div>
           </div>
           <!-- /.box -->
         </div>

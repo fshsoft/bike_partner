@@ -18,7 +18,7 @@ use Bike\Partner\Controller\AbstractController;
 class IndexController extends AbstractController
 {
     /**
-     * @Route("/", name="client_home")
+     * @Route("/", name="client")
      * @Template("BikePartnerBundle:client/index:index.html.twig")
      */
     public function indexAction(Request $request)
