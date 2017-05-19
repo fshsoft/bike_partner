@@ -7,6 +7,7 @@ use Bike\Partner\Exception\Logic\LogicException;
 use Bike\Partner\Service\AbstractService;
 use Bike\Partner\Util\ArgUtil;
 use Bike\Partner\Db\Partner\Admin;
+use Bike\Partner\Db\Partner\Passport;
 
 class AdminService extends AbstractService
 {
@@ -17,8 +18,9 @@ class AdminService extends AbstractService
             'username',
             'pwd',
             'repwd',
-            'type',
         ));
+        $data['type'] = Passport::TYPE_ADMIN;
+
         $this->validateName($data['name']);
         $adminDao = $this->getAdminDao();
         $adminConn = $adminDao->getConn();

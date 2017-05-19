@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use Bike\Partner\Controller\AbstractController;
+
 /**
  * @Route("/admin")
  */

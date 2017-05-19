@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Dashboard</title>
+  <title>百宝单车合伙人平台</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+{% block css %}
   <!-- Bootstrap 3.3.7 -->
   <link rel="stylesheet" href="/vendor/bootstrap/3.3.7/css/bootstrap.min.css">
   <!-- Font Awesome -->
@@ -29,13 +30,16 @@
   <link rel="stylesheet" href="/vendor/daterangepicker/daterangepicker.css">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="/vendor/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+{% endblock %}
 
+{% block js %}
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="/vendor/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="/vendor/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+{% endblock %}
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -529,6 +533,7 @@
 </div>
 <!-- ./wrapper -->
 
+{% block footer_js %}
 <!-- jQuery 2.2.3 -->
 <script src="/vendor/jQuery/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -561,5 +566,6 @@
 <script src="/js/app.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/js/demo.js"></script>
+{% endblock %}
 </body>
 </html>
