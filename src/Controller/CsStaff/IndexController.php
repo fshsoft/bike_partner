@@ -23,6 +23,18 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
+        $csStaffService = $this->get('bike.partner.service.cs_staff');
+        $page = $request->query->get('p');
+        $pageNum = 10;
+        return $csStaffService->searchCsStaff($request->query->all(), $page, $pageNum);
+    }
+
+    /**
+     * @Route("/new", name="cs_staff_new")
+     * @Template("BikePartnerBundle:cs_staff/index:new.html.twig")
+     */
+    public function newAction(Request $request)
+    {
         return array();
     }
 }
