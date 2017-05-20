@@ -63,7 +63,7 @@
 
                 <div class="form-group" style="display:none;">
                   <label for="parent_id">上级客服</label>
-                  <select name="parent_id" id="parent_id" class="form-control select2" style="width: 100%;" required="required">
+                  <select name="parent_id" id="parent_id" class="form-control select2" style="width: 100%;" >
                       <option value="0">选择上级客服</option>
                   </select>
                 </div>
@@ -75,7 +75,7 @@
 </div>
 
               <div class="box-footer">
-                <button type="submit" class="btn btn-primary">创建</button>
+                <button type="submit" class="btn btn-primary">保存</button>
               </div>
             </form>
           </div>
@@ -92,9 +92,8 @@ var parentId = '{{ staff.getParentId() }}';
 var ownId = '{{ staff.getId() }}';
 $(function(){
     if (parentId > 0) {
-      getParentStaff(level);
-      $('#parent_id').val(parentId);
-      $('#parent_id').attr('required','required');
+      getParentStaff(level,parentId);
+      $('#parent_id').trigger('change');
       $('#parent_id').parent().show();
     }
 
@@ -106,15 +105,13 @@ $(function(){
         $('#parent_id').trigger('change');
         if (level == 1 || level == 0) {
           $('#parent_id').parent().hide();
-          $('#parent_id').removeAttr('required');
         } else {
-          $('#parent_id').attr('required','required');
-          getParentStaff(level);
+          getParentStaff(level,0);
           $('#parent_id').parent().show();
         }
     });
 
-    function getParentStaff(level)
+    function getParentStaff(level,parentId)
     {
       var url = '{{ path('cs_staff_parent_staff') }}';
       $.post(url,{'level':level,'id':ownId},function(results){
@@ -125,6 +122,10 @@ $(function(){
                 str+='<option value="'+key+'">'+json[key]+'</option>';
             }
             $('#parent_id').html(str);
+            if (parentId > 0) {
+              $('#parent_id').val(parentId);  
+            }
+            
 
       },'json');
     }

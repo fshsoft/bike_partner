@@ -35,6 +35,43 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        if ($request->isMethod('post')) {
+            $data = $request->request->all();
+            $clientService = $this->get('bike.partner.service.client');
+            try {
+                $clientService->createClient($data);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
         return array();
     }
+
+
+    /**
+     * @Route("/edit/{id}", name="client_edit")
+     * @Template("BikePartnerBundle:client/index:edit.html.twig")
+     */
+    public function editAction(Request $request,$id)
+    {
+        $clientService = $this->get('bike.partner.service.client');
+        if ($request->isMethod('post')) {
+            $data = $request->request->all();
+            try {
+                $clientService->editClient($id,$data);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        } else {
+            $client = $clientService->getClient($id);
+            $passportService = $this->container->get('bike.partner.service.passport');
+            $passport = $passportService->getPassport($id);
+            return ['client'=>$client,'passport'=>$passport];
+        }
+        return array();
+    }
+
+
 }

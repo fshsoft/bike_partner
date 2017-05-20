@@ -44,6 +44,40 @@ class ClientService extends AbstractService
         }
     }
 
+    public function editClient($id,array $data)
+    {
+        $data = ArgUtil::getArgs($data, array(
+            'name',
+            'username',
+            'pwd',
+            'repwd',
+        ));
+        $data['type'] = Passport::TYPE_CLIENT;
+        $data['id'] = $id;
+
+        $this->validateName($data['name']);
+        $clientDao = $this->getClientDao();
+        $clientConn = $clientDao->getConn();
+        $passportService = $this->container->get('bike.partner.service.passport');
+        $passportDao = $this->container->get('bike.partner.dao.partner.passport');
+        $passportConn = $passportDao->getConn();
+        $clientConn->beginTransaction();
+        $passportConn->beginTransaction();
+        try {
+            $passportService->updatePassport($id,$data);
+            $client = new Client($data);
+            $clientDao->save($client);
+
+            $passportConn->commit();
+            $clientConn->commit();
+        } catch (\Exception $e) {
+            $passportConn->rollBack();
+            $clientConn->rollBack();
+            throw $e;
+        }
+    }
+
+
     public function getClient($id)
     {
         $key = 'client.' . $id;
