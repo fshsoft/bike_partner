@@ -20,6 +20,16 @@
             <tag name="monolog.logger" channel="security"/>
         </service>
 
+        <service id="bike.partner.security.voter.role"
+            class="Bike\Partner\Security\Voter\RoleVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
+
         <service id="bike.partner.security.voter.agent"
             class="Bike\Partner\Security\Voter\AgentVoter"
             public="false"
@@ -30,5 +40,14 @@
             <tag name="security.voter" />
         </service>
 
+        <service id="bike.partner.security.voter.cs_staff"
+            class="Bike\Partner\Security\Voter\CsStaffVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
     </services>
 </container>

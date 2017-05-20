@@ -27,18 +27,21 @@ class AgentVoter extends AbstractVoter
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
-        $user = $token->getUser();
         if (!in_array($attribute, $this->actions)) {
             return false;
         }
+        $user = $token->getUser();
         $role = $user->getRole();
         if ($role == 'ROLE_ADMIN') {
             return true;
-        } elseif ($role == 'ROLE_AGENT' 
-            && $subject instanceof Agent
-            && in_array($user->getId(), array($subject->getId(), $subject->getParentId()))
-        ) { //  如果是代理商角色，暂不考虑跨级管理
-            return true;   
+        } elseif ($role == 'ROLE_AGENT') {
+            if ($subject instanceof Agent) {
+                if (in_array($user->getId(), array($subject->getId(), $subject->getParentId()))) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
         }
         return false;
     }

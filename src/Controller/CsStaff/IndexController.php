@@ -23,10 +23,18 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_CS_STAFF'), 'role');
+        $this->denyAccessUnlessGranted('view', 'cs_staff');
+
         $csStaffService = $this->get('bike.partner.service.cs_staff');
         $page = $request->query->get('p');
         $pageNum = 10;
-        return $csStaffService->searchCsStaff($request->query->all(), $page, $pageNum);
+        $args = $request->query->all();
+        $user = $this->getUser();
+        if ($user->getRole() == 'ROLE_CS_STAFF') {
+            $args['parent_id'] = $user->getId();
+        }
+        return $csStaffService->searchCsStaff($args, $page, $pageNum);
     }
 
     /**
