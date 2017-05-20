@@ -28,6 +28,7 @@ class CsStaffService extends AbstractService
         $data = ArgUtil::getArgs($data, array(
             'name',
             'username',
+            'level',
             'pwd',
             'repwd',
             'parent_id',
@@ -35,6 +36,10 @@ class CsStaffService extends AbstractService
         $data['type'] = Passport::TYPE_CS_STAFF;
 
         $this->validateName($data['name']);
+        $this->validateLevel($data['level']);
+        if (!$data['parent_id']&&CsStaff::LEVEL_ONE == $data['level']) {
+            $data['parent_id'] = 0;
+        }
         $this->validateParentId($data['parent_id']);
         if ($data['parent_id'] == 0) {
             $data['level'] = 1;
@@ -69,6 +74,7 @@ class CsStaffService extends AbstractService
     {
         $data = ArgUtil::getArgs($data, array(
             'name',
+            'level',
             'username',
             'pwd',
             'repwd',
@@ -77,11 +83,11 @@ class CsStaffService extends AbstractService
         $data['type'] = Passport::TYPE_CS_STAFF;
         $data['id'] = $id;
 
-        if (!$data['parent_id']) {
+        $this->validateName($data['name']);
+        $this->validateLevel($data['level']);
+        if (!$data['parent_id']&&CsStaff::LEVEL_ONE == $data['level']) {
             $data['parent_id'] = 0;
         }
-
-        $this->validateName($data['name']);
         $this->validateParentId($data['parent_id']);
         if ($data['parent_id'] == 0) {
             $data['level'] = 1;
@@ -203,7 +209,7 @@ class CsStaffService extends AbstractService
 
         $where = ['level'=>$level-1];
         if ($id !== null) {
-            $where['id_not'] = $id;
+            $where['id.not'] = $id;
         }
         $staffs = $csStaffDao->findList('id,name',$where,0,0);
 
@@ -225,6 +231,13 @@ class CsStaffService extends AbstractService
         $len = mb_strlen($name);
         if ($len > 20) {
             throw new LogicException('客服名称不能多于20个字符');
+        }
+    }
+
+    protected function validateLevel($level)
+    {
+        if (!is_numeric($level) || intval($level) != $level || $level <= 0) {
+            throw new LogicException('等级不合法');
         }
     }
 

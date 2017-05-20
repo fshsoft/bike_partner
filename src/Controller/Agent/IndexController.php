@@ -35,6 +35,62 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        if ($request->isMethod('post')) {
+            $data = $request->request->all();
+            $agentService = $this->get('bike.partner.service.agent');
+            try {
+                $agentService->createAgent($data);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
         return array();
     }
+
+
+    /**
+     * @Route("/edit/{id}", name="agent_edit")
+     * @Template("BikePartnerBundle:agent/index:edit.html.twig")
+     */
+    public function editAction(Request $request,$id)
+    {
+        $agentService = $this->get('bike.partner.service.agent');
+        if ($request->isMethod('post')) {
+            $data = $request->request->all();
+            try {
+                $agentService->editAgent($id,$data);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        } else {
+            $agent = $agentService->getAgent($id);
+            $passportService = $this->container->get('bike.partner.service.passport');
+            $passport = $passportService->getPassport($id);
+            return ['agent'=>$agent,'passport'=>$passport];
+        }
+        return array();
+    }
+
+    /**
+     * @Route("/parent_agent", name="agent_parent_agent")
+     */
+    public function parentAgeantAction(Request $request)
+    {
+        try {
+            $level = $request->get('level');
+            $id = $request->get('id',null);
+            $agentService = $this->get('bike.partner.service.agent');
+            $agents = $agentService->getParentAgentIdAndNameMap($level,$id);
+            return $this->jsonSuccess($agents);
+        } catch (\Exception $e) {
+            return $this->jsonError($e);
+        }        
+
+    }
+
+
+
+
 }

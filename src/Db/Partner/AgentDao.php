@@ -20,7 +20,15 @@ class AgentDao extends AbstractDao
         $where = ArgUtil::getArgs($where, array(
             'id',
             'id.in',
+            'level',
+            'id.not',
         ));
+        if ($where['level']) {
+            $qb->andWhere('level = ' . $qb->createNamedParameter($where['level']));
+        }
+        if ($where['id.not']) {
+            $qb->andWhere('id <> ' . $qb->createNamedParameter($where['id.not']));
+        }
     }
 
     protected function applyOrder(QueryBuilder $qb, array $order)

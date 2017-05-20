@@ -33,14 +33,16 @@
                   <th>ID</th>
                   <th>用户名</th>
                   <th>姓名</th>
-                  <th></th>
+                  <th>操作</th>
                 </tr>
 {% for v in list.client %}
                 <tr>
                   <td>{{ v.getId() }}</td>
                   <td>{{ map.passport[v.getId()].getUsername() }}</td>
                   <td>{{ v.getName() }}</td>
-                  <td></td>
+                  <td>
+                    <a href="{{ path('client_edit',{'id':v.getId() }) }}"><i class="fa fa-fw fa-edit"></i></a>
+                  </td>
                 </tr>
 {% endfor %}
               </tbody></table>
