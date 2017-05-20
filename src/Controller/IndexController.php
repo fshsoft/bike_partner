@@ -44,7 +44,7 @@ class IndexController extends AbstractController
         $adminService = $this->get('bike.partner.service.admin');
         $data = array(
             'name' => '管理员',
-            'username' => 'ethantsien',
+            'username' => 'bikebox',
             'pwd' => '789789',
             'repwd' => '789789',
             'type' => Passport::TYPE_ADMIN,
