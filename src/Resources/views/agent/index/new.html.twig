@@ -4,13 +4,13 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>
-        新增管理员
+        新增代理商
         <small></small>
       </h1>
       <ol class="breadcrumb">
         <li><i class="fa fa-dashboard"></i> 首页</li>
         <li>用户管理</li>
-        <li><a href="{{ path('admin') }}">管理员</a></li>
+        <li><a href="{{ path('agent') }}">代理商</a></li>
         <li class="active">新增</li>
       </ol>
     </section>
@@ -18,45 +18,73 @@
     <!-- Main content -->
     <section class="content">
       <div class="row">
-        <!-- left column -->
         <div class="col-md-12">
           <!-- general form elements -->
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Quick Example</h3>
+              <h3 class="box-title">账号信息</h3>
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form role="form">
+            <form role="form" id="new-agent-form">
+<div class="row">
+    <div class="col-md-6 col-sm-12 col-xs-12">
               <div class="box-body">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                <div class="callout callout-danger" style="display:none">
+                  <h4>创建失败</h4>
+                  <p></p>
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                  <label for="name">姓名</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="" required="required">
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputFile">File input</label>
-                  <input type="file" id="exampleInputFile">
-
-                  <p class="help-block">Example block-level help text here.</p>
+                  <label for="username">用户名</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="" required="required">
                 </div>
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox"> Check me out
-                  </label>
+                <div class="form-group">
+                  <label for="pwd">密码</label>
+                  <input type="password" class="form-control" id="pwd" name="pwd" placeholder="" required="required">
+                </div>
+                <div class="form-group">
+                  <label for="repwd">确认密码</label>
+                  <input type="password" class="form-control" id="repwd" name="repwd" placeholder="" required="required">
                 </div>
               </div>
               <!-- /.box-body -->
+    </div>
+</div>
 
               <div class="box-footer">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">创建</button>
               </div>
             </form>
           </div>
         </div>
       </div>
     </section>
+{% endblock %}
+
+{% block footer_js %}
+{{ parent() }}
+<script>
+$(function(){
+    var $form = $('#new-agent-form');
+    $form.submit(function(){
+        var url = '{{ path('agent_new') }}';
+        var data = $form.serializeArray();
+
+        $form.find('button[type="submit"]').prop('disabled', true);
+        $.post(url, data, function(result){
+            if (result.errno == 0) {
+                window.location.href = '{{ path('agent') }}';
+            } else {
+                $form.find('.callout-danger').show().find('p').html(result.errmsg);
+            }
+            $form.find('button[type="submit"]').prop('disabled', false);
+        });
+        return false;
+    });
+});
+</script>
 {% endblock %}

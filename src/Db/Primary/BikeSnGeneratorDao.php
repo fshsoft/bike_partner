@@ -1,26 +1,22 @@
 <?php
 
-namespace Bike\Partner\Db\Partner;
+namespace Bike\Partner\Db\Primary;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 use Bike\Partner\Db\AbstractDao;
-use Bike\Partner\Util\ArgUtil;
 
-class AgentDao extends AbstractDao
+class BikeSnGeneratorDao extends AbstractDao
 {
     protected function parseTable($cond, $dbOp)
     {
-        return "`{$this->db}`.`{$this->prefix}agent`";
+        return "`{$this->db}`.`{$this->prefix}bike_sn_generator`";
     }
 
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)
     {
-        $where = ArgUtil::getArgs($where, array(
-            'id',
-            'id.in',
-        ));
+
     }
 
     protected function applyOrder(QueryBuilder $qb, array $order)

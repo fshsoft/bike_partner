@@ -4,16 +4,14 @@ namespace Bike\Partner\Db\Primary;
 
 use Bike\Partner\Db\AbstractEntity;
 
-class Bike extends AbstractEntity
+class Elock extends AbstractEntity
 {
     protected static $pk = 'id';
 
     protected static $cols = array(
         'id' => null,
         'sn' => null,
-        'elock_sn' => null,
-        'client_id' => null,
-        'agent_id' => null,
+        'bike_sn' => null,
         'create_time' => null,
     );
 }
