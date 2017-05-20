@@ -134,6 +134,11 @@ abstract class AbstractEntity implements EntityInterface
         return static::$pk;
     }
 
+    public function getPrimaryValue()
+    {
+        return $this->getCol(static::$pk);
+    }
+
     /**
      * @todo 方法和字段的映射缓存
      */

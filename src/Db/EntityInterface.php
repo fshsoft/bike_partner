@@ -13,4 +13,6 @@ interface EntityInterface
     public function fromArray(array $data);
 
     public static function getPrimaryKey();
+
+    public function getPrimaryValue();
 }

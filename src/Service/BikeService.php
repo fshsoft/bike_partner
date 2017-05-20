@@ -23,9 +23,9 @@ class BikeService extends AbstractService
         $bikeDao = $this->getBikeDao();
         $bikeList = $bikeDao->findList('*', $args, $offset, $pageNum);
         if ($bikeList) {
-            $passportIds = array();
+            $agentIds = array();
             foreach ($bikeList as $v) {
-                $passportIds[] = $v->getId();
+                $agentIds[] = $v->getId();
             }
             $passportService = $this->container->get('bike.partner.service.passport');
             $passportMap = $passportService->getPassportMapByIds('', $passportIds);

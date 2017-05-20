@@ -368,6 +368,19 @@ abstract class AbstractDao implements DaoInterface
         }
     }
 
+    public function findMap($cols, array $where, $offset, $limit, 
+        array $order = array(), array $group = array())
+    {
+        $list = $this->findList($cols, $where, $offset, $limit, $order, $group);
+        if ($list) {
+            $map = array();
+            foreach ($list as $v) {
+                $map[$v->getPrimaryValue()] = $v;
+            }
+            return $map;
+        }
+    }
+
     public function findNum(array $where, $col = '*', array $group = array())
     {
         $qb = $this->conn->createQueryBuilder();
