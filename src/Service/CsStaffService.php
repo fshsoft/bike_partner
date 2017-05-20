@@ -77,6 +77,10 @@ class CsStaffService extends AbstractService
         $data['type'] = Passport::TYPE_CS_STAFF;
         $data['id'] = $id;
 
+        if (!$data['parent_id']) {
+            $data['parent_id'] = 0;
+        }
+
         $this->validateName($data['name']);
         $this->validateParentId($data['parent_id']);
         if ($data['parent_id'] == 0) {
@@ -94,8 +98,8 @@ class CsStaffService extends AbstractService
         $csStaffConn->beginTransaction();
         $passportConn->beginTransaction();
         try {
-            $passport = new Passport($data);
-            $passportDao->save($passport);
+
+            $passportService->updatePassport($id,$data);
 
             $csStaff = new CsStaff($data);
             $csStaffDao->save($csStaff);
@@ -189,7 +193,7 @@ class CsStaffService extends AbstractService
         return array();
     }
 
-    public function getParentStaffIdAndNameMap($level)
+    public function getParentStaffIdAndNameMap($level,$id = null)
     {
         if ($level == CsStaff::LEVEL_ONE) {
             return array();
@@ -198,6 +202,9 @@ class CsStaffService extends AbstractService
         $csStaffDao = $this->getCsStaffDao();
 
         $where = ['level'=>$level-1];
+        if ($id !== null) {
+            $where['id_not'] = $id;
+        }
         $staffs = $csStaffDao->findList('id,name',$where,0,0);
 
         if ($staffs) {

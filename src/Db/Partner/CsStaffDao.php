@@ -20,9 +20,13 @@ class CsStaffDao extends AbstractDao
     {
         $where = ArgUtil::getArgs($where, array(
             'level', 
+            'id_not',
         ));
         if ($where['level']) {
             $qb->andWhere('level = ' . $qb->createNamedParameter($where['level']));
+        }
+        if ($where['id_not']) {
+            $qb->andWhere('id <> ' . $qb->createNamedParameter($where['id_not']));
         }
     }
 

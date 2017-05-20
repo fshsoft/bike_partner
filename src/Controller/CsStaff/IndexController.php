@@ -79,8 +79,9 @@ class IndexController extends AbstractController
     {
         try {
             $level = $request->get('level');
+            $id = $request->get('id',null);
             $csStaffService = $this->get('bike.partner.service.cs_staff');
-            $staffs = $csStaffService->getParentStaffIdAndNameMap($level);
+            $staffs = $csStaffService->getParentStaffIdAndNameMap($level,$id);
             return $this->jsonSuccess($staffs);
         } catch (\Exception $e) {
             return $this->jsonError($e);

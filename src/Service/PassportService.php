@@ -30,6 +30,28 @@ class PassportService extends AbstractService
         return $passportDao->create($data, true);
     }
 
+    public function updatePassport($id,array $data)
+    {
+        $data = ArgUtil::getArgs($data, array(
+            'username',
+            'pwd',
+            'repwd',
+            'type',
+        ));
+        $this->validateUsername($data['username'],$id);
+
+        if ($data['pwd']) {
+            $this->validatePassword($data['pwd'], $data['repwd']);    
+            $data['pwd'] = $this->hashPassword($data['pwd']);
+        } else {
+            unset($data['pwd']);
+        }
+        $this->validateType($data['type']);
+        $passportDao = $this->getPassportDao();
+        return $passportDao->update($id,$data);        
+
+    }
+
     public function getPassport($id)
     {
         $key = $this->getPassportRequestCacheKey('id', $id);
@@ -99,7 +121,7 @@ class PassportService extends AbstractService
         $this->setRequestCache($this->getPassportRequestCacheKey('username', $passport->getUsername()), $passport);
     }
 
-    protected function validateUsername($username)
+    protected function validateUsername($username,$id = null)
     {
         if (!$username) {
             throw new LogicException('用户名不能为空');
@@ -108,7 +130,14 @@ class PassportService extends AbstractService
             throw new LogicException('用户名只能是字母，数字或者下划线，首字符不能为数字，长度为6-19个字符');
         }
         $passport = $this->getPassportByUsername($username);
+
+
         if ($passport) {
+            if ($id !== null) {
+                if ($passport->getId() == $id ) {
+                    return true;
+                }
+            }
             throw new LogicException('用户名已存在');
         }
     }
