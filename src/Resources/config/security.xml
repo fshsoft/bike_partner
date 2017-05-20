@@ -20,5 +20,15 @@
             <tag name="monolog.logger" channel="security"/>
         </service>
 
+        <service id="bike.partner.security.voter.agent"
+            class="Bike\Partner\Security\Voter\AgentVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
+
     </services>
 </container>
