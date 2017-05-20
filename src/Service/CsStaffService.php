@@ -11,6 +11,18 @@ use Bike\Partner\Db\Partner\Passport;
 
 class CsStaffService extends AbstractService
 {
+
+    protected $levelMap = array(
+        CsStaff::LEVEL_ONE => '一级',
+        CsStaff::LEVEL_TWO => '二级',
+        CsStaff::LEVEL_THREE => '三级',
+    );
+
+    public function getLevelMap()
+    {   
+        return $this->levelMap;
+    }
+
     public function createCsStaff(array $data)
     {
         $data = ArgUtil::getArgs($data, array(
@@ -43,6 +55,50 @@ class CsStaffService extends AbstractService
             $csStaff = new CsStaff($data);
             $csStaff->setId($passportId);
             $csStaffDao->create($csStaff);
+
+            $passportConn->commit();
+            $csStaffConn->commit();
+        } catch (\Exception $e) {
+            $passportConn->rollBack();
+            $csStaffConn->rollBack();
+            throw $e;
+        }
+    }
+
+    public function editCsStaff($id,array $data)
+    {
+        $data = ArgUtil::getArgs($data, array(
+            'name',
+            'username',
+            'pwd',
+            'repwd',
+            'parent_id',
+        ));
+        $data['type'] = Passport::TYPE_CS_STAFF;
+        $data['id'] = $id;
+
+        $this->validateName($data['name']);
+        $this->validateParentId($data['parent_id']);
+        if ($data['parent_id'] == 0) {
+            $data['level'] = 1;
+        } else {
+            $csStaff = $this->getCsStaff($data['parent_id']);
+            $data['level'] = $csStaff->getLevel() + 1;
+        }
+
+        $csStaffDao = $this->getCsStaffDao();
+        $csStaffConn = $csStaffDao->getConn();
+        $passportService = $this->container->get('bike.partner.service.passport');
+        $passportDao = $this->container->get('bike.partner.dao.partner.passport');
+        $passportConn = $passportDao->getConn();
+        $csStaffConn->beginTransaction();
+        $passportConn->beginTransaction();
+        try {
+            $passport = new Passport($data);
+            $passportDao->save($passport);
+
+            $csStaff = new CsStaff($data);
+            $csStaffDao->save($csStaff);
 
             $passportConn->commit();
             $csStaffConn->commit();
@@ -114,6 +170,44 @@ class CsStaffService extends AbstractService
             }
         }
         return $csStaff;
+    }
+
+    public function getParentStaff($level)
+    {
+        if ($level == CsStaff::LEVEL_ONE) {
+            return array();
+        }
+
+        $csStaffDao = $this->getCsStaffDao();
+
+        $where = ['level'=>$level-1];
+        $staffs = $csStaffDao->findList('id,name',$where);
+
+        if ($staffs) {
+            return $staffs;
+        }
+        return array();
+    }
+
+    public function getParentStaffIdAndNameMap($level)
+    {
+        if ($level == CsStaff::LEVEL_ONE) {
+            return array();
+        }
+
+        $csStaffDao = $this->getCsStaffDao();
+
+        $where = ['level'=>$level-1];
+        $staffs = $csStaffDao->findList('id,name',$where,0,0);
+
+        if ($staffs) {
+            $map = array();
+            foreach ($staffs as $each) {
+                $map[$each->getId()] = $each->getName();
+            }
+            return $map;
+        }
+        return array();
     }
 
     protected function validateName($name)

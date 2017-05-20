@@ -7,6 +7,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 use Bike\Partner\Db\AbstractDao;
 
+use Bike\Partner\Util\ArgUtil;
+
 class CsStaffDao extends AbstractDao
 {
     protected function parseTable($cond, $dbOp)
@@ -16,7 +18,12 @@ class CsStaffDao extends AbstractDao
 
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)
     {
-
+        $where = ArgUtil::getArgs($where, array(
+            'level', 
+        ));
+        if ($where['level']) {
+            $qb->andWhere('level = ' . $qb->createNamedParameter($where['level']));
+        }
     }
 
     protected function applyOrder(QueryBuilder $qb, array $order)
