@@ -34,6 +34,7 @@
                   <th>车锁编号</th>
                   <th>代理商</th>
                   <th>委托人</th>
+                  <th>操作</th>
                 </tr>
 {% for v in list.bike %}
                 <tr>
@@ -53,6 +54,13 @@
 无
 {% endif %}
                   </td> 
+                  <td>
+{% if v.getClientId() > 0 %}
+                      <a title="取消分配" data-toggle="modal" data-name="{{ v.getSn() }}" data-target="#delete-modal" data-id="{{ v.getSn() }}"><i class="fa fa-fw fa-reply"></i></a>
+{% else %}
+                    <a title="分配车辆" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getSn() }}"><i class="fa fa-fw fa-bicycle"></i></a>
+{% endif %}
+                  </td>
                 </tr>
 {% endfor %}
               </tbody></table>
@@ -67,4 +75,133 @@
         </div>
       </div>
     </section>
+
+
+    <!-- 分配车辆modal -->
+    <div class="modal fade bs-example-modal-lg" id="bind-modal" tabindex="-1" role="dialog" aria-labelledby="bind-card-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="bind-card-modal-label">分配车辆</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="modal-info">
+                <div class="form-group">
+                    <label for="bind-bike">用户名</label>
+                    <input id="bind-bike" name="username" class="form-control" placeholder="请输入委托人用户名"/> 
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" name="confirm">分配</button>
+          </div>
+        </div>
+      </div>
+    </div>    
+
+    <!-- 取消分配modal -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="delete-modal-label">取消分配</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="alert alert-danger modal-info">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" name="confirm">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+    window.onload = function(){
+
+      /***  取消分配 >>**/
+      var $deleteModal = $('#delete-modal');
+      $deleteModal.on('show.bs.modal', function (e) {
+          $deleteModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
+          $deleteModal.find('.modal-error').hide();
+          $deleteModal.find('.modal-info').html('确认取消分配车辆"'+$(e.relatedTarget).data('name')+'"');
+      });
+
+      $deleteModal.find('button[name="confirm"]').click(function(){
+          var url = '{{ path('bike_unbind') }}';
+          var data = {
+              sn: $deleteModal.find('button[name="confirm"]').data('id')
+          };
+
+          $deleteModal.find('button[name="confirm"]').prop('disabled', true);
+          $.post(url, data, function(result){
+              if (result.errno === 0) {
+                  window.location.reload();
+              } else {
+                  $deleteModal.find('.modal-error .panel-body').html(result.errmsg);
+                  $deleteModal.find('.modal-error').show();
+              }
+              $deleteModal.find('button[name="confirm"]').prop('disabled', false);
+          }, 'json'); 
+      });
+      /**<<<<取消分配 END **/
+
+
+      /**分配 》》》***/
+      var $bindModal = $('#bind-modal');
+      $bindModal.on('show.bs.modal', function (e) {
+          $bindModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
+          $bindModal.find('.modal-error').hide();
+      });
+
+      $bindModal.find('button[name="confirm"]').click(function(){ 
+          var url = '{{ path('bike_bind') }}';
+          var data = {
+              sn: $bindModal.find('button[name="confirm"]').data('id'),
+              username: $bindModal.find('input[name="username"]').val()
+          };
+
+          $bindModal.find('button[name="confirm"]').prop('disabled', true);
+          $.post(url, data, function(result){
+              if (result.errno === 0) {
+                  window.location.reload();
+              } else {
+                  $bindModal.find('.modal-error .panel-body').html(result.errmsg);
+                  $bindModal.find('.modal-error').show();
+              }
+              $bindModal.find('button[name="confirm"]').prop('disabled', false);
+          }, 'json'); 
+      });
+      /*** 《《《分配 END***/
+
+
+    }
+
+
+    </script>
 {% endblock %}

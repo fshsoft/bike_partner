@@ -46,4 +46,42 @@ class IndexController extends AbstractController
         }
         return array();
     }
+
+    /**
+     * @Route("/bind", name="bike_bind")
+     */
+    public function bindAction(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            try {
+                $sn = $request->get('sn','');
+                $clientId = $request->get('clientId',0);
+                $username = $request->get('username','');
+                $bikeService = $this->get('bike.partner.service.bike');
+                $bikeService->bindBike($sn,$clientId,$username);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
+        return array();
+    }
+
+    /**
+     * @Route("/unbind", name="bike_unbind")
+     */
+    public function unbindAction(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            try {
+                $sn = $request->get('sn');
+                $bikeService = $this->get('bike.partner.service.bike');
+                $bikeService->unbindBike($sn);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
+        return array();
+    }
 }
