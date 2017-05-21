@@ -46,15 +46,18 @@ class IndexController extends AbstractController
     public function newAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
+        $agentService = $this->get('bike.partner.service.agent');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
-            $agentService = $this->get('bike.partner.service.agent');
             try {
                 $agentService->createAgent($data);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
                 return $this->jsonError($e);
             }
+        } else {
+            $agent = $agentService->getAgent($this->getUser()->getId());
+            return ['agent'=>$agent];
         }
         return array();
     }
@@ -90,6 +93,7 @@ class IndexController extends AbstractController
      */
     public function parentAgeantAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
         try {
             $level = $request->get('level');
             $id = $request->get('id',null);

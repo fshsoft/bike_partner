@@ -51,8 +51,9 @@
                   <input type="password" class="form-control" id="repwd" name="repwd" placeholder="" required="required">
                 </div>
 
-{% if app.user.getRole() != 'ROLE_AGENT' %}
-                <div class="form-group">
+{% set role = app.user.getRole() %}
+{% if role == 'ROLE_ADMIN' %}
+  <div class="form-group">
                   <label for="level">等级</label>
                   <select name="level" id="level" class="form-control select2" style="width: 100%;" >
                       <option value="0">选择等级</option>
@@ -71,6 +72,9 @@
                       
                   </select>
                 </div>
+{% elseif role == 'ROLE_AGENT' %}
+                <input type="hidden" name="level" value="{{ agent.getLevel()+1 }}">
+                <input type="hidden" name="parent_id" value="{{ agent.getId() }}">
 {% endif %}
 
               </div>

@@ -13,7 +13,7 @@ class AgentVoter extends AbstractVoter
 
     protected $actions = array(
         'view',
-        'edit',    
+        'edit',
     );
 
     protected function supports($attribute, $subject)
