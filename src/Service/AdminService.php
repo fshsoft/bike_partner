@@ -44,6 +44,42 @@ class AdminService extends AbstractService
         }
     }
 
+
+    public function editAdmin($id, array $data)
+    {
+        $data = ArgUtil::getArgs($data, array(
+            'name',
+            'username',
+            'pwd',
+            'repwd',
+        ));
+        $data['type'] = Passport::TYPE_ADMIN;
+        $data['id'] = $id;
+
+        $this->validateName($data['name']);
+        $adminDao = $this->getAdminDao();
+        $adminConn = $adminDao->getConn();
+        $passportService = $this->container->get('bike.partner.service.passport');
+        $passportDao = $this->container->get('bike.partner.dao.partner.passport');
+        $passportConn = $passportDao->getConn();
+        $adminConn->beginTransaction();
+        $passportConn->beginTransaction();
+        try {
+            $passportService->updatePassport($id,$data);
+            $admin = new Admin($data);
+            $adminDao->save($admin);
+
+            $passportConn->commit();
+            $adminConn->commit();
+        } catch (\Exception $e) {
+            $passportConn->rollBack();
+            $adminConn->rollBack();
+            throw $e;
+        }   
+
+    }
+
+
     public function getAdmin($id)
     {
         $key = 'admin.' . $id;

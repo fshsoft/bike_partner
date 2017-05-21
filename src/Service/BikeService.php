@@ -8,6 +8,7 @@ use Bike\Partner\Service\AbstractService;
 use Bike\Partner\Util\ArgUtil;
 use Bike\Partner\Db\Primary\Bike;
 use Bike\Partner\Db\Primary\BikeSnGenrator;
+use Bike\Partner\Db\Partner\Passport;
 
 class BikeService extends AbstractService
 {
@@ -34,6 +35,66 @@ class BikeService extends AbstractService
             $bikeSnGeneratorConn->rollBack();
             throw $e;
         }
+    }
+
+
+    public function bindBike($sn, $clientId, $username = '')
+    {
+        try {
+            $bikeDao = $this->getBikeDao();
+            $where = ['sn'=>$sn];
+            $bike = $bikeDao->find($where);
+            if (!$bike) {
+                throw new LogicException("未找到车辆");
+            }
+            if ($bike->getClientId() > 0) {
+                throw new LogicException("车辆已被分配");
+            }
+
+            if ($clientId) {
+                $clientDao = $this->container->get('bike.partner.dao.partner.client');
+                $client = $clientDao->find($clientId);    
+            } elseif ($username) {
+                $passportDao = $this->container->get('bike.partner.dao.partner.passport');
+                $wherePass = ['username'=>$username,'type'=>Passport::TYPE_CLIENT];
+                $client = $passportDao->find($wherePass);
+            } else {
+                throw new LogicException("参数错误");
+            }
+            
+            if (!$client) {
+                throw new LogicException("没有找到委托人");
+            }
+
+            $data = ['client_id'=>$client->getId()];
+            $bikeDao->update($bike->getId(),$data);
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+       
+    }
+
+    public function unbindBike($sn)
+    {
+        try {
+            $bikeDao = $this->getBikeDao();
+            $where = ['sn'=>$sn];
+            $bike = $bikeDao->find($where);
+            if (!$bike) {
+                throw new LogicException("未找到车辆");
+            }
+            if ($bike->getClientId() <= 0) {
+                throw new LogicException("车辆未被分配");
+            }
+
+            $data = ['client_id'=>0];
+            $bikeDao->update($bike->getId(),$data);
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
     }
 
     public function searchBike(array $args, $page, $pageNum)
