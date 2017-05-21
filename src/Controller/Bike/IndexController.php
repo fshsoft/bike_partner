@@ -23,6 +23,12 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array(
+            'ROLE_ADMIN', 
+            'ROLE_CLIENT',
+            'ROLE_CS_STAFF',
+            'ROLE_AGENT',
+        ), 'role');
         $bikeService = $this->get('bike.partner.service.bike');
         $page = $request->query->get('p');
         $pageNum = 10;
