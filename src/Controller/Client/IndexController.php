@@ -23,6 +23,7 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_CS_STAFF'), 'role');
         $clientService = $this->get('bike.partner.service.client');
         $page = $request->query->get('p');
         $pageNum = 10;
@@ -35,6 +36,7 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_CS_STAFF'), 'role');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
             $clientService = $this->get('bike.partner.service.client');
@@ -55,6 +57,7 @@ class IndexController extends AbstractController
      */
     public function editAction(Request $request,$id)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_CS_STAFF'), 'role');
         $clientService = $this->get('bike.partner.service.client');
         if ($request->isMethod('post')) {
             $data = $request->request->all();

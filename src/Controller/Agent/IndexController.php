@@ -23,10 +23,18 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
         $agentService = $this->get('bike.partner.service.agent');
         $page = $request->query->get('p');
         $pageNum = 10;
-        return $agentService->searchAgent($request->query->all(), $page, $pageNum);
+
+        $args = $request->query->all();
+        $user = $this->getUser();
+        if ($user->getRole() == 'ROLE_AGENT') {
+            $args['parent_id'] = $user->getId();
+        }
+
+        return $agentService->searchAgent($args, $page, $pageNum);
     }
 
     /**
@@ -35,6 +43,7 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
             $agentService = $this->get('bike.partner.service.agent');
@@ -55,6 +64,7 @@ class IndexController extends AbstractController
      */
     public function editAction(Request $request,$id)
     {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
         $agentService = $this->get('bike.partner.service.agent');
         if ($request->isMethod('post')) {
             $data = $request->request->all();

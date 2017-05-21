@@ -19,10 +19,14 @@ class AgentDao extends AbstractDao
     {
         $where = ArgUtil::getArgs($where, array(
             'id',
-            'id.in',
+            'parent_id',
             'level',
+            'id.in',
             'id.not',
         ));
+        if ($where['parent_id']) {
+            $qb->andWhere('parent_id = ' . $qb->createNamedParameter($where['parent_id']));
+        }
         if ($where['level']) {
             $qb->andWhere('level = ' . $qb->createNamedParameter($where['level']));
         }

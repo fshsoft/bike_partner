@@ -133,7 +133,7 @@ class AgentService extends AbstractService
         }
         $offset = ($page - 1) * $pageNum;
         $agentDao = $this->getAgentDao();
-        $agentList = $agentDao->findList('*', array(), $offset, $pageNum);
+        $agentList = $agentDao->findList('*', $args, $offset, $pageNum);
         if ($agentList) {
             $passportIds = array();
             foreach ($agentList as $v) {
@@ -147,7 +147,7 @@ class AgentService extends AbstractService
             $passportMap = array();
             $agentList = array();
         }
-        $total = $agentDao->findNum(array());
+        $total = $agentDao->findNum($args);
         if ($total) {
             $totalPage = ceil($total / $pageNum);
             if ($page > $totalPage) {
