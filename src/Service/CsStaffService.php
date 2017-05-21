@@ -131,7 +131,7 @@ class CsStaffService extends AbstractService
         }
         $offset = ($page - 1) * $pageNum;
         $csStaffDao = $this->getCsStaffDao();
-        $csStaffList = $csStaffDao->findList('*', array(), $offset, $pageNum);
+        $csStaffList = $csStaffDao->findList('*', $args, $offset, $pageNum);
         if ($csStaffList) {
             $passportIds = array();
             foreach ($csStaffList as $v) {
@@ -145,7 +145,7 @@ class CsStaffService extends AbstractService
             $passportMap = array();
             $csStaffList = array();
         }
-        $total = $csStaffDao->findNum(array());
+        $total = $csStaffDao->findNum($args);
         if ($total) {
             $totalPage = ceil($total / $pageNum);
             if ($page > $totalPage) {
@@ -193,7 +193,7 @@ class CsStaffService extends AbstractService
         $csStaffDao = $this->getCsStaffDao();
 
         $where = ['level'=>$level-1];
-        $staffs = $csStaffDao->findList('id,name',$where);
+        $staffs = $csStaffDao->findList('id,name',$where,0,0);
 
         if ($staffs) {
             return $staffs;

@@ -37,7 +37,6 @@ class IndexController extends AbstractController
     public function newAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_CS_STAFF'), 'role');
-        $this->denyAccessUnlessGranted('view', 'cs_staff');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
             $clientService = $this->get('bike.partner.service.client');
