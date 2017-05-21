@@ -42,6 +42,7 @@
                   <td>{{ v.getName() }}</td>
                   <td>
                     <a href="{{ path('client_edit',{'id':v.getId() }) }}"><i class="fa fa-fw fa-edit"></i></a>
+                    <a data-toggle="modal" data-target=".bs-example-modal-lg"><i class="fa fa-fw fa-bicycle"></i></a>
                   </td>
                 </tr>
 {% endfor %}
@@ -56,5 +57,67 @@
           <!-- /.box -->
         </div>
       </div>
+
+    <div class="modal fade bs-example-modal-lg" id="bind-modal" tabindex="-1" role="dialog" aria-labelledby="bind-card-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="bind-card-modal-label">分配车辆</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="modal-info">
+                <div class="form-group">
+                    <label for="bind-bike">车辆SN</label>
+                    <input id="bind-bike" name="sn" class="form-control" placeholder="请输入车辆SN"/> 
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" name="confirm">分配</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </section>
+    <script type="text/javascript">
+      window.onload = function(){
+          var $bindModal = $('#bind-modal');
+          $bindModal.on('show.bs.modal', function (e) {
+              $bindModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
+              $bindModal.find('.modal-error').hide();
+          });
+
+          $bindModal.find('button[name="confirm"]').click(function(){ 
+              var url = '{{ path('agent_new') }}';
+              var data = {
+                  id: $bindModal.find('button[name="confirm"]').data('id'),
+                  sn: $bindModal.find('input[name="sn"]').val()
+              };
+
+              $bindModal.find('button[name="confirm"]').prop('disabled', true);
+              $.post(url, data, function(result){
+                  if (result.errno === 0) {
+                      window.location.reload();
+                  } else {
+                      $bindModal.find('.modal-error .panel-body').html(result.errmsg);
+                      $bindModal.find('.modal-error').show();
+                  }
+                  $bindModal.find('button[name="confirm"]').prop('disabled', false);
+              }, 'json'); 
+          });
+      }
+    </script>
 {% endblock %}
