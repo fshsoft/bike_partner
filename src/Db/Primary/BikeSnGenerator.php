@@ -10,6 +10,6 @@ class BikeSnGenerator extends AbstractEntity
 
     protected static $cols = array(
         'id' => null,
-        'stub' => null,
+        'stub' => 'a',
     );
 }

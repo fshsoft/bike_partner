@@ -96,7 +96,7 @@ class BikeService extends AbstractService
     protected function generateBikeSn()
     {
         $bikeSnGeneratorDao = $this->getBikeSnGeneratorDao();
-        return $bikeSnGeneratorDao->create(array(), true);
+        return $bikeSnGeneratorDao->save(array(), true);
     }
 
     protected function getBikeDao()
