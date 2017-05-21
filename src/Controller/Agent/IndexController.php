@@ -24,6 +24,8 @@ class IndexController extends AbstractController
     public function indexAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
+        $this->denyAccessUnlessGranted('view', 'agent');
+
         $agentService = $this->get('bike.partner.service.agent');
         $page = $request->query->get('p');
         $pageNum = 10;
