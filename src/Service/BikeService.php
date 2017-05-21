@@ -95,6 +95,22 @@ class BikeService extends AbstractService
         );
     }
 
+    public function getBikeBySn($sn)
+    {
+        $key = 'bike.sn.' . $sn;
+        $bike = $this->getRequestCache($key);
+        if (!$bike) {
+            $bikeDao = $this->getBikeDao();
+            $bike = $bikeDao->find(array(
+                'sn' => $sn,
+            ));
+            if ($bike) {
+                $this->setRequestCache($key, $bike);
+            }
+        }
+        return $bike;
+    }
+
     protected function generateBikeSn()
     {
         $bikeSnGeneratorDao = $this->getBikeSnGeneratorDao();
