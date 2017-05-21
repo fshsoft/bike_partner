@@ -118,7 +118,7 @@ class ClientService extends AbstractService
             $passportMap = array();
             $clientList = array();
         }
-        $total = $clientDao->findNum(array());
+        $total = $clientDao->findNum($args);
         if ($total) {
             $totalPage = ceil($total / $pageNum);
             if ($page > $totalPage) {

@@ -11,6 +11,31 @@ use Bike\Partner\Db\Primary\BikeSnGenrator;
 
 class BikeService extends AbstractService
 {
+    public function createBike(array $data)
+    {
+        $bikeDao = $this->getBikeDao();
+        $bikeConn = $bikeDao->getConn();
+        $bikeSnGeneratorDao = $this->getBikeSnGeneratorDao(); 
+        $bikeSnGeneratorConn = $bikeSnGeneratorDao->getConn();
+
+        $bikeConn->beginTransaction();
+        $bikeSnGeneratorConn->beginTransaction();
+        try {
+            $sn = $this->generateBikeSn();
+            $bike = new Bike();
+            $bike
+                ->setSn($sn)
+                ->setCreateTime(time());
+            $bikeDao->create($bike);
+            $bikeConn->commit();
+            $bikeSnGeneratorConn->commit();
+        } catch (\Exception $e) {
+            $bikeConn->rollBack();
+            $bikeSnGeneratorConn->rollBack();
+            throw $e;
+        }
+    }
+
     public function searchBike(array $args, $page, $pageNum)
     {
         $page = intval($page);
@@ -26,18 +51,23 @@ class BikeService extends AbstractService
         $bikeList = $bikeDao->findList('*', $args, $offset, $pageNum);
         if ($bikeList) {
             $agentIds = array();
+            $clientIds = array();
             foreach ($bikeList as $v) {
                 $agentIds[] = $v->getId();
+                $clientIds[] = $v->getId();
             }
-            $passportDao = $this->container->get('bike.partner.dao.partner.passport');
-            $passportMap = $passportDao->findMap('', array(
-                'id.in' => $passportIds,
+            $agentDao = $this->container->get('bike.partner.dao.partner.agent');
+            $agentMap = $agentDao->findMap('', array(
+                'id.in' => $agentIds,
+            ), 0, 0);
+            $clientDao = $this->container->get('bike.partner.dao.partner.client');
+            $clientMap = $clientDao->findMap('', array(
+                'id.in' => $clientIds,
             ), 0, 0);
         } else {
-            $passportMap = array();
-            $adminList = array();
+            $bikeList = $agentMap = $clientMap = array();
         }
-        $total = $adminDao->findNum(array());
+        $total = $bikeDao->findNum($args);
         if ($total) {
             $totalPage = ceil($total / $pageNum);
             if ($page > $totalPage) {
@@ -54,24 +84,29 @@ class BikeService extends AbstractService
             'pageNum' => $pageNum,
             'total' => $total,
             'list' => array(
-                'admin' => $adminList,
+                'bike' => $bikeList,
             ),
             'map' => array(
-                'passport' => $passportMap,
+                'agent' => $agentMap,
+                'client' => $clientMap,
             ),
         );
     }
 
     protected function generateBikeSn()
     {
-        $bikeSnGeneratorDao = $this->container->get('bike.partner.dao.primary');
-        $bikeSnGenerator = new BikeSnGenerator();
-        return $bikeSnGeneratorDao->create($bikeSnGenerator, true);
+        $bikeSnGeneratorDao = $this->getBikeSnGeneratorDao();
+        return $bikeSnGeneratorDao->create(array(), true);
     }
 
     protected function getBikeDao()
     {
         return $this->container->get('bike.partner.dao.primary.bike');
+    }
+
+    protected function getBikeSnGeneratorDao()
+    {
+        return $this->container->get('bike.partner.dao.primary.bike_sn_generator');
     }
 }
  

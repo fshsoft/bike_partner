@@ -23,7 +23,10 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        return array();
+        $bikeService = $this->get('bike.partner.service.bike');
+        $page = $request->query->get('p');
+        $pageNum = 10;
+        return $bikeService->searchBike($request->query->all(), $page, $pageNum);
     }
 
     /**
@@ -32,6 +35,15 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        if ($request->isMethod('post')) {
+            try {
+                $bikeService = $this->get('bike.partner.service.bike');
+                $bikeService->createBike($request->query->all());
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
         return array();
     }
 }

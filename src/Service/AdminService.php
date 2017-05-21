@@ -84,7 +84,7 @@ class AdminService extends AbstractService
             $passportMap = array();
             $adminList = array();
         }
-        $total = $adminDao->findNum(array());
+        $total = $adminDao->findNum($args);
         if ($total) {
             $totalPage = ceil($total / $pageNum);
             if ($page > $totalPage) {
