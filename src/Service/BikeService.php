@@ -48,7 +48,9 @@ class BikeService extends AbstractService
         }
         $offset = ($page - 1) * $pageNum;
         $bikeDao = $this->getBikeDao();
-        $bikeList = $bikeDao->findList('*', $args, $offset, $pageNum);
+        $bikeList = $bikeDao->findList('*', $args, $offset, $pageNum, array(
+            'sn' => 'desc',
+        ));
         if ($bikeList) {
             $agentIds = array();
             $clientIds = array();

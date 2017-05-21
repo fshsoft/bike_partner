@@ -36,7 +36,11 @@ class BikeDao extends AbstractDao
 
     protected function applyOrder(QueryBuilder $qb, array $order)
     {
-
+        if ($order) {
+            foreach ($order as $col => $sort) {
+                $qb->addOrderBy($col, $sort);
+            }
+        }
     }
 
     protected function applyGroup(QueryBuilder $qb, array $group)
