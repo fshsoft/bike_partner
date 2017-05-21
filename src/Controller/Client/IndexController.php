@@ -72,6 +72,4 @@ class IndexController extends AbstractController
         }
         return array();
     }
-
-
 }

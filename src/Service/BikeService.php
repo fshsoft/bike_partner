@@ -6,6 +6,8 @@ use Bike\Partner\Exception\Debug\DebugException;
 use Bike\Partner\Exception\Logic\LogicException;
 use Bike\Partner\Service\AbstractService;
 use Bike\Partner\Util\ArgUtil;
+use Bike\Partner\Db\Primary\Bike;
+use Bike\Partner\Db\Primary\BikeSnGenrator;
 
 class BikeService extends AbstractService
 {
@@ -58,11 +60,18 @@ class BikeService extends AbstractService
                 'passport' => $passportMap,
             ),
         );
-    }   
+    }
+
+    protected function generateBikeSn()
+    {
+        $bikeSnGeneratorDao = $this->container->get('bike.partner.dao.primary');
+        $bikeSnGenerator = new BikeSnGenerator();
+        return $bikeSnGeneratorDao->create($bikeSnGenerator, true);
+    }
 
     protected function getBikeDao()
     {
         return $this->container->get('bike.partner.dao.primary.bike');
-    } 
+    }
 }
  
