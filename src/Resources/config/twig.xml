@@ -11,6 +11,12 @@
             </call>
             <tag name="twig.extension" />
         </service>
+        <service id="bike.partner.twig.extension.passport" class="Bike\Partner\Twig\PassportExtension" public="false">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="twig.extension" />
+        </service>
         <service id="bike.partner.twig.extension.cs_staff" class="Bike\Partner\Twig\CsStaffExtension" public="false">
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
