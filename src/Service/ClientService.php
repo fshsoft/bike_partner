@@ -104,7 +104,7 @@ class ClientService extends AbstractService
         }
         $offset = ($page - 1) * $pageNum;
         $clientDao = $this->getClientDao();
-        $clientList = $clientDao->findList('*', array(), $offset, $pageNum);
+        $clientList = $clientDao->findList('*', $args, $offset, $pageNum);
         if ($clientList) {
             $passportIds = array();
             foreach ($clientList as $v) {

@@ -106,7 +106,7 @@ class AdminService extends AbstractService
         }
         $offset = ($page - 1) * $pageNum;
         $adminDao = $this->getAdminDao();
-        $adminList = $adminDao->findList('*', array(), $offset, $pageNum);
+        $adminList = $adminDao->findList('*', $args, $offset, $pageNum);
         if ($adminList) {
             $passportIds = array();
             foreach ($adminList as $v) {

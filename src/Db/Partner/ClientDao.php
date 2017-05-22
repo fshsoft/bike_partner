@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 
 use Bike\Partner\Db\AbstractDao;
+use Bike\Partner\Util\ArgUtil;
 
 class ClientDao extends AbstractDao
 {
@@ -16,6 +17,13 @@ class ClientDao extends AbstractDao
 
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)
     {
+        $where = ArgUtil::getArgs($where, array(
+            'name',
+        ));
+
+        if ($where['name']) {
+            $qb->andWhere('name like :likename')->setParameter(':likename','%'.$where['name'].'%');
+        }
 
     }
 

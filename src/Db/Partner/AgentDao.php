@@ -21,6 +21,7 @@ class AgentDao extends AbstractDao
             'id',
             'parent_id',
             'level',
+            'name',
             'id.in',
             'id.not',
         ));
@@ -29,6 +30,9 @@ class AgentDao extends AbstractDao
         }
         if ($where['level']) {
             $qb->andWhere('level = ' . $qb->createNamedParameter($where['level']));
+        }
+        if ($where['name']) {
+            $qb->andWhere('name like :likename')->setParameter(':likename','%'.$where['name'].'%');
         }
         if ($where['id.not']) {
             $qb->andWhere('id <> ' . $qb->createNamedParameter($where['id.not']));
