@@ -15,7 +15,7 @@ use Bike\Partner\Db\Partner\Passport;
 class UserService extends AbstractService
 {
 
-    public function editProfile($id, array $data ,$role)
+    public function editProfile($id, array $data ,$type,$role)
     {
     	$data = ArgUtil::getArgs($data, array(
             'name',
@@ -23,11 +23,10 @@ class UserService extends AbstractService
             'pwd',
             'repwd',
         ));
-        $data['type'] = Passport::TYPE_ADMIN;
+        $data['type'] = $type;
         $data['id'] = $id;
         $this->validateName($data['name']);
         $userDao = $this->getUserDao($role);
-
         $userConn = $userDao->getConn();
         $passportService = $this->container->get('bike.partner.service.passport');
         $passportDao = $this->container->get('bike.partner.dao.partner.passport');
@@ -40,7 +39,7 @@ class UserService extends AbstractService
             	$user = new Admin($data);
             }elseif ($role == "agent") {
             	$user = new Agent($data);
-            }elseif ($role == "csstaff") {
+            }elseif ($role == "cs_staff") {
              	$user = new CsStaff($data);
             }elseif ($role == "client") {
         	 	$user = new Client($data);

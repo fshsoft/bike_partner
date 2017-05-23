@@ -26,12 +26,13 @@ class IndexController extends AbstractController
     {
     	$user = $this->getUser();
     	$id = $user->getId();
+        $type = $user->getType();
     	$role = strtolower(substr(strstr($user->getRole(),"_"),1));
     	$userService = $this->get('bike.partner.service.user');
     	if ($request->isMethod('post')) {
             $data = $request->request->all();
             try {
-                $userService->editProfile($id,$data,$role);
+                $userService->editProfile($id,$data,$type,$role);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
                 return $this->jsonError($e);

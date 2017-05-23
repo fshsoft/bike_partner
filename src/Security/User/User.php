@@ -20,6 +20,11 @@ class User extends Passport implements UserInterface
         return $this->getCol('id');
     }
 
+    public function getType()
+    {
+        return $this->getCol('type');
+    }
+
     public function getRole()
     {
         $type = $this->getCol('type');
