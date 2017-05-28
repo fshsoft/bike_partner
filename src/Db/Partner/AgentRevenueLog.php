@@ -4,15 +4,17 @@ namespace Bike\Partner\Db\Partner;
 
 use Bike\Partner\Db\AbstractEntity;
 
-class Client extends AbstractEntity
+class AgentRevenueLog extends AbstractEntity
 {
     protected static $pk = 'id';
 
     protected static $cols = array(
         'id' => null,
-        'name' => null,
-        'static_revenue' => 0,
-        'dynamic_revenue' => 0,
+        'agent_id' => null,
+        'type' => null,
         'revenue' => 0,
+        'log_date' => '',
+        'log_month' => null,
+        'log_time' => null,
     );
 }

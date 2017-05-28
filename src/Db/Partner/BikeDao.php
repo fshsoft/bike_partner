@@ -1,6 +1,6 @@
 <?php
 
-namespace Bike\Partner\Db\Primary;
+namespace Bike\Partner\Db\Partner;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
@@ -18,29 +18,26 @@ class BikeDao extends AbstractDao
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)
     {
         $where = ArgUtil::getArgs($where, array(
+            'id',
             'client_id',
             'agent_id',
-            'id',
         )); 
 
+        if ($where['id']) {
+            $qb->andWhere('id = ' . $qb->createNamedParameter($where['id']));
+        }
         if ($where['client_id']) {
             $qb->andWhere('client_id = ' . $qb->createNamedParameter($where['client_id']));
         }
         if ($where['agent_id']) {
             $qb->andWhere('agent_id = ' . $qb->createNamedParameter($where['agent_id']));
         }
-        if ($where['id']) {
-            $qb->andWhere('id = ' . $qb->createNamedParameter($where['id']));
-        }
+        
     }
 
     protected function applyOrder(QueryBuilder $qb, array $order)
     {
-        if ($order) {
-            foreach ($order as $col => $sort) {
-                $qb->addOrderBy($col, $sort);
-            }
-        }
+
     }
 
     protected function applyGroup(QueryBuilder $qb, array $group)

@@ -10,8 +10,8 @@ class Elock extends AbstractEntity
 
     protected static $cols = array(
         'id' => null,
-        'sn' => null,
-        'bike_sn' => 0,
+        'mac' => '',
+        'bike_id' => 0,
         'create_time' => null,
     );
 }

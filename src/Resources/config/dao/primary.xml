@@ -7,7 +7,7 @@
         <parameter key="bike.partner.dao.primary.user.class">Bike\Partner\Db\Primary\UserDao</parameter>
         <parameter key="bike.partner.dao.primary.bike.class">Bike\Partner\Db\Primary\BikeDao</parameter>
         <parameter key="bike.partner.dao.primary.elock.class">Bike\Partner\Db\Primary\ElockDao</parameter>
-        <parameter key="bike.partner.dao.primary.bike_sn_generator.class">Bike\Partner\Db\Primary\BikeSnGeneratorDao</parameter>
+        <parameter key="bike.partner.dao.primary.bike_id_generator.class">Bike\Partner\Db\Primary\BikeIdGeneratorDao</parameter>
     </parameters>
 
     <services>
@@ -32,11 +32,11 @@
             <argument>Bike\Partner\Db\Primary\Elock</argument>
         </service>
 
-        <service id="bike.partner.dao.primary.bike_sn_generator" class="%bike.partner.dao.primary.bike_sn_generator.class%">
+        <service id="bike.partner.dao.primary.bike_id_generator" class="%bike.partner.dao.primary.bike_id_generator.class%">
             <argument type="service" id="bike.partner.params.dao.primary.conn_id"/>
             <argument>%bike.partner.params.dao.primary.db_name%</argument>
             <argument>%bike.partner.params.dao.primary.prefix%</argument>
-            <argument>Bike\Partner\Db\Primary\BikeSnGenerator</argument>
+            <argument>Bike\Partner\Db\Primary\BikeIdGenerator</argument>
         </service>
     </services>
 </container>

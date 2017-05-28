@@ -10,6 +10,7 @@
         <parameter key="bike.partner.dao.partner.agent.class">Bike\Partner\Db\Partner\AgentDao</parameter>
         <parameter key="bike.partner.dao.partner.cs_staff.class">Bike\Partner\Db\Partner\CsStaffDao</parameter>
         <parameter key="bike.partner.dao.partner.client.class">Bike\Partner\Db\Partner\ClientDao</parameter>
+        <parameter key="bike.partner.dao.partner.bike.class">Bike\Partner\Db\Partner\BikeDao</parameter>
     </parameters>
 
     <services>
@@ -53,6 +54,13 @@
             <argument>%bike.partner.params.dao.partner.db_name%</argument>
             <argument>%bike.partner.params.dao.partner.prefix%</argument>
             <argument>Bike\Partner\Db\Partner\Client</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.bike" class="%bike.partner.dao.partner.bike.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\Bike</argument>
         </service>
     </services>
 </container>
