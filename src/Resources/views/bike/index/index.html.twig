@@ -16,81 +16,199 @@
 
 
     <section class="content search-section" style="min-height:auto;">
-      <div class="box" style="border:none;margin-bottom:0px;">
-        <div class="box-body">
-            <form method="get" id="search-form" class="form-inline">
-              <input type="hidden" name="search" value="1">
-              <div class="form-group col-xs-3">
-                <label for="SN">车辆编号：</label>
-                <input type="text" class="form-control" name="sn" value="{{ app.request.query.get('sn') }}"  id="SN" placeholder="请输入车辆编号">
-              </div>
-              <button type="submit" class="btn btn-primary">查询</button>
-              
-            </form>
-        </div>
-      </div>
-    </section>
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab_1" data-toggle="tab">单车明细</a></li>
+              <li><a href="#tab_2" data-toggle="tab">日收益管理</a></li>
+              <li><a href="#tab_3" data-toggle="tab">月收益管理</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1">
+                <div class="box" style="border:none;margin-bottom:0px;">
+                  <div class="box-body" style="border:1px solid #eee;border-radius:3px;border-bottom:0;">
+                      <form method="get" id="search-form" class="form-inline">
+                        <input type="hidden" name="search" value="1">
+                        <div class="form-group col-xs-3">
+                          <label for="SN">单车编号：</label>
+                          <input type="text" class="form-control" name="sn" style="border-radius:3px;" value="{{ app.request.query.get('sn') }}"  id="SN" placeholder="请输入车辆编号">
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>查询</button>
+                        
+                      </form>
+                  </div>
+                </div>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">列表</h3>
+                <!-- main content-->
+                <div class="row" style="padding-top:15px;">
+                  <div class="col-xs-12">
+                    <div class="box" style="border-top:1px solid #eee;">
+                      <div class="box-header">
+                        <h3 class="box-title">列表</h3>
 
-              <div class="box-tools">
-                <a href="{{ path('bike_new') }}" class="btn btn-sm btn-block btn-primary">新增</a>
+                        <div class="box-tools">
+                          <a href="{{ path('bike_new') }}" class="btn btn-sm  btn-primary"><i class="fa fa-plus"></i>新增</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a>
+                        </div>
+
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody><tr>
+                            <th>单车编号</th>
+                            <th>车锁编号</th>
+                            <th>代理商</th>
+                            <th>委托人</th>
+                            <th>操作</th>
+                          </tr>
+          {% for v in list.bike %}
+                          <tr>
+                            <td>{{ v.getSn() }}</td>
+                            <td>{{ v.getBikeSn() }}</td>
+                            <td>
+          {% if map.agent[v.getAgentId()] is defined %}
+          {{ map.agent[v.getAgentId()].getName() }}
+          {% else %}
+          无
+          {% endif %}
+                            </td> 
+                            <td>
+          {% if map.client[v.getClientId()] is defined %}
+          {{ map.client[v.getClientId()].getName() }}
+          {% else %}
+          无
+          {% endif %}
+                            </td> 
+                            <td>
+          {% if v.getClientId() > 0 %}
+                                <a title="取消分配" class="btn btn-xs  btn-primary"  data-toggle="modal" data-name="{{ v.getSn() }}" data-target="#delete-modal" data-id="{{ v.getSn() }}">取消分配</a>
+          {% else %}
+                              <a title="分配车辆" class="btn btn-xs  btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getSn() }}">分配</a>
+          {% endif %}
+                            </td>
+                          </tr>
+          {% endfor %}
+                        </tbody></table>
+                      </div>
+                      <!-- /.box-body -->
+                      <div class="box-footer clearfix">
+          {% import 'BikePartnerBundle::paginator.macro.twig' as paginator %}
+          {{ paginator.paginate(page, totalPage, 5, 'bike', app.request.query.all(), ['pull-right']) }}
+                      </div>
+                    </div>
+                    <!-- /.box -->
+                  </div>
+                </div>
+                <!-- main content end-->
+
               </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_2">
+
+                <!-- daily profit -->
+                <div class="row" style="padding-top:15px;">
+                  <div class="col-xs-12">
+                    <div class="box" style="border-top:1px solid #eee;">
+                      <div class="box-header">
+                        <h3 class="box-title">列表</h3>
+
+                        <div class="box-tools">
+                          <a href="{{ path('bike_new') }}" class="btn btn-sm  btn-primary"><i class="fa fa-plus"></i>新增</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a>
+                        </div>
+
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody><tr>
+                            <th>日期</th>
+                            <th>日收益／元</th>
+                            <th>操作</th>
+                          </tr>
+          {% for v in list.bike %}
+                          <tr>
+                            <td>{{ v.getSn() }}</td>
+                            <td>{{ v.getBikeSn() }}999.00</td>
+                             
+                            <td>
+                              <a href="" class="btn btn-xs  btn-primary"><i class="fa fa-eye"></i>查看</a>
+
+                            </td>
+                          </tr>
+          {% endfor %}
+                        </tbody></table>
+                      </div>
+                      <!-- /.box-body -->
+                      <div class="box-footer clearfix">
+          {% import 'BikePartnerBundle::paginator.macro.twig' as paginator %}
+          {{ paginator.paginate(page, totalPage, 5, 'bike', app.request.query.all(), ['pull-right']) }}
+                      </div>
+                    </div>
+                    <!-- /.box -->
+                  </div>
+                </div>
+                <!-- daily profit end -->
+
+
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_3">
+                <!-- monthly profit -->
+                <div class="row" style="padding-top:15px;">
+                  <div class="col-xs-12">
+                    <div class="box" style="border-top:1px solid #eee;">
+                      <div class="box-header">
+                        <h3 class="box-title">列表</h3>
+
+                        <div class="box-tools">
+                          <a href="{{ path('bike_new') }}" class="btn btn-sm  btn-primary"><i class="fa fa-plus"></i>新增</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a>
+                        </div>
+
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody><tr>
+                            <th>日期</th>
+                            <th>月收益／元</th>
+                            <th>操作</th>
+                          </tr>
+          {% for v in list.bike %}
+                          <tr>
+                            <td>{{ '2017年5月' }}</td>
+                            <td>{{ v.getBikeSn() }}999.00</td>
+                             
+                            <td>
+                              <a href="" class="btn btn-xs  btn-primary">提现</a>
+                            </td>
+                          </tr>
+          {% endfor %}
+                        </tbody></table>
+                      </div>
+                      <!-- /.box-body -->
+                      <div class="box-footer clearfix">
+          {% import 'BikePartnerBundle::paginator.macro.twig' as paginator %}
+          {{ paginator.paginate(page, totalPage, 5, 'bike', app.request.query.all(), ['pull-right']) }}
+                      </div>
+                    </div>
+                    <!-- /.box -->
+                  </div>
+                </div>
+
+                <!-- monthly profit end -->
+              </div>
+              <!-- /.tab-pane -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
-                <tbody><tr>
-                  <th>单车编号</th>
-                  <th>车锁编号</th>
-                  <th>代理商</th>
-                  <th>委托人</th>
-                  <th>操作</th>
-                </tr>
-{% for v in list.bike %}
-                <tr>
-                  <td>{{ v.getSn() }}</td>
-                  <td>{{ v.getBikeSn() }}</td>
-                  <td>
-{% if map.agent[v.getAgentId()] is defined %}
-{{ map.agent[v.getAgentId()].getName() }}
-{% else %}
-无
-{% endif %}
-                  </td> 
-                  <td>
-{% if map.client[v.getClientId()] is defined %}
-{{ map.client[v.getClientId()].getName() }}
-{% else %}
-无
-{% endif %}
-                  </td> 
-                  <td>
-{% if v.getClientId() > 0 %}
-                      <a title="取消分配" data-toggle="modal" data-name="{{ v.getSn() }}" data-target="#delete-modal" data-id="{{ v.getSn() }}"><i class="fa fa-fw fa-reply"></i></a>
-{% else %}
-                    <a title="分配车辆" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getSn() }}"><i class="fa fa-fw fa-bicycle"></i></a>
-{% endif %}
-                  </td>
-                </tr>
-{% endfor %}
-              </tbody></table>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer clearfix">
-{% import 'BikePartnerBundle::paginator.macro.twig' as paginator %}
-{{ paginator.paginate(page, totalPage, 5, 'bike', app.request.query.all(), ['pull-right']) }}
-            </div>
+            <!-- /.tab-content -->
           </div>
-          <!-- /.box -->
-        </div>
-      </div>
     </section>
 
 
