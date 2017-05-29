@@ -12,7 +12,7 @@
         <parameter key="bike.partner.service.client.class">Bike\Partner\Service\ClientService</parameter>
         <parameter key="bike.partner.service.bike.class">Bike\Partner\Service\BikeService</parameter>
         <parameter key="bike.partner.service.user.class">Bike\Partner\Service\UserService</parameter>
-        <parameter key="bike.partner.service.revenue.class">Bike\Partner\Service\RevenueService</parameter>
+        <parameter key="bike.partner.service.bike_revenue.class">Bike\Partner\Service\BikeRevenueService</parameter>
     </parameters>
 
     <services>
@@ -58,7 +58,7 @@
             </call>
         </service>
 
-        <service id="bike.partner.service.revenue" class="%bike.partner.service.revenue.class%">
+        <service id="bike.partner.service.bike_revenue" class="%bike.partner.service.bike_revenue.class%">
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
