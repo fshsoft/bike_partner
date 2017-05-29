@@ -1,0 +1,162 @@
+{% extends 'BikePartnerBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        单车
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><i class="fa fa-dashboard"></i> 首页</li>
+        <li>车辆管理</li>
+        <li class="active">单车</li>
+      </ol>
+    </section>
+
+
+    <section class="content search-section" style="min-height:auto;">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#tab_1" data-toggle="tab">单车明细</a></li>
+              <li><a href="#tab_2" data-toggle="tab">日收益管理</a></li>
+              <li><a href="#tab_3" data-toggle="tab">月收益管理</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane " id="tab_1">
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane active" id="tab_2">
+
+                <!-- daily profit -->
+                <div class="row" style="padding-top:15px;">
+                  <div class="col-xs-12">
+                    <div class="box" style="border-top:1px solid #eee;">
+                      <div class="box-header">
+                        <h3 class="box-title">列表</h3>
+
+                        <div class="box-tools">
+                          <a href="{{ path('bike_new') }}" class="btn btn-sm  btn-primary"><i class="fa fa-plus"></i>新增</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a>
+                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a>
+                        </div>
+
+                      </div>
+                      <!-- /.box-header -->
+                      <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                          <tbody><tr>
+                            <th>日期</th>
+                            <th>日收益／元</th>
+                            <th>操作</th>
+                          </tr>
+          {% for v in list.log %}
+                          <tr>
+                            <td>{{ v.getLogDate() }}</td>
+                            <td>{{ v.getRevenue() }}</td>
+                             
+                            <td>
+                              <a href="" class="btn btn-xs  btn-primary"><i class="fa fa-eye"></i>查看</a>
+
+                            </td>
+                          </tr>
+          {% endfor %}
+                        </tbody></table>
+                      </div>
+                      <!-- /.box-body -->
+                      <div class="box-footer clearfix">
+          {% import 'BikePartnerBundle::paginator.macro.twig' as paginator %}
+          {{ paginator.paginate(page, totalPage, 5, 'bike', app.request.query.all(), ['pull-right']) }}
+                      </div>
+                    </div>
+                    <!-- /.box -->
+                  </div>
+                </div>
+                <!-- daily profit end -->
+
+
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="tab_3">
+              </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+    </section>
+
+
+    <!-- 分配车辆modal -->
+    <div class="modal fade bs-example-modal-lg" id="bind-modal" tabindex="-1" role="dialog" aria-labelledby="bind-card-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="bind-card-modal-label">分配车辆</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="modal-info">
+                <div class="form-group">
+                    <label for="bind-bike">用户名</label>
+                    <input id="bind-bike" name="username" class="form-control" placeholder="请输入委托人用户名"/> 
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" name="confirm">分配</button>
+          </div>
+        </div>
+      </div>
+    </div>    
+
+    <script type="text/javascript">
+    window.onload = function(){
+
+
+
+
+      /**分配 》》》***/
+      var $bindModal = $('#bind-modal');
+      $bindModal.on('show.bs.modal', function (e) {
+          $bindModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
+          $bindModal.find('.modal-error').hide();
+      });
+
+      $bindModal.find('button[name="confirm"]').click(function(){ 
+          var url = '{{ path('bike_bind') }}';
+          var data = {
+              id: $bindModal.find('button[name="confirm"]').data('id'),
+              username: $bindModal.find('input[name="username"]').val()
+          };
+
+          $bindModal.find('button[name="confirm"]').prop('disabled', true);
+          $.post(url, data, function(result){
+              if (result.errno === 0) {
+                  window.location.reload();
+              } else {
+                  $bindModal.find('.modal-error .panel-body').html(result.errmsg);
+                  $bindModal.find('.modal-error').show();
+              }
+              $bindModal.find('button[name="confirm"]').prop('disabled', false);
+          }, 'json'); 
+      });
+      /*** 《《《分配 END***/
+
+
+    }
+
+
+    </script>
+{% endblock %}

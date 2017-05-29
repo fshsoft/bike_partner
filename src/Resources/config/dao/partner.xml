@@ -11,6 +11,9 @@
         <parameter key="bike.partner.dao.partner.cs_staff.class">Bike\Partner\Db\Partner\CsStaffDao</parameter>
         <parameter key="bike.partner.dao.partner.client.class">Bike\Partner\Db\Partner\ClientDao</parameter>
         <parameter key="bike.partner.dao.partner.bike.class">Bike\Partner\Db\Partner\BikeDao</parameter>
+        <parameter key="bike.partner.dao.partner.agent_revenue_log.class">Bike\Partner\Db\Partner\AgentRevenueLogDao</parameter>
+        <parameter key="bike.partner.dao.partner.bike_revenue_log.class">Bike\Partner\Db\Partner\BikeRevenueLogDao</parameter>
+        <parameter key="bike.partner.dao.partner.client_revenue_log.class">Bike\Partner\Db\Partner\ClientRevenueLogDao</parameter>
     </parameters>
 
     <services>
@@ -61,6 +64,27 @@
             <argument>%bike.partner.params.dao.partner.db_name%</argument>
             <argument>%bike.partner.params.dao.partner.prefix%</argument>
             <argument>Bike\Partner\Db\Partner\Bike</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.agent_revenue_log" class="%bike.partner.dao.partner.agent_revenue_log.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\AgentRevenueLog</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.bike_revenue_log" class="%bike.partner.dao.partner.bike_revenue_log.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\BikeRevenueLog</argument>
+        </service>
+
+        <service id="bike.partner.dao.partner.client_revenue_log" class="%bike.partner.dao.partner.client_revenue_log.class%">
+            <argument type="service" id="bike.partner.params.dao.partner.conn_id"/>
+            <argument>%bike.partner.params.dao.partner.db_name%</argument>
+            <argument>%bike.partner.params.dao.partner.prefix%</argument>
+            <argument>Bike\Partner\Db\Partner\ClientRevenueLog</argument>
         </service>
     </services>
 </container>
