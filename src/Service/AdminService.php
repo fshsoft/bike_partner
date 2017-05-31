@@ -161,4 +161,3 @@ class AdminService extends AbstractService
         return $this->container->get('bike.partner.dao.partner.admin');
     }
 }
- 
