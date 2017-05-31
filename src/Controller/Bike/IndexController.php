@@ -60,11 +60,11 @@ class IndexController extends AbstractController
     {
         if ($request->isMethod('post')) {
             try {
-                $sn = $request->get('sn','');
+                $id = $request->get('id','');
                 $clientId = $request->get('clientId',0);
                 $username = $request->get('username','');
                 $bikeService = $this->get('bike.partner.service.bike');
-                $bikeService->bindBike($sn,$clientId,$username);
+                $bikeService->bindBike($id,$clientId,$username);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
                 return $this->jsonError($e);
@@ -80,9 +80,9 @@ class IndexController extends AbstractController
     {
         if ($request->isMethod('post')) {
             try {
-                $sn = $request->get('sn');
+                $id = $request->get('id');
                 $bikeService = $this->get('bike.partner.service.bike');
-                $bikeService->unbindBike($sn);
+                $bikeService->unbindBike($id);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
                 return $this->jsonError($e);

@@ -11,7 +11,8 @@ class Client extends AbstractEntity
     protected static $cols = array(
         'id' => null,
         'name' => null,
-        'parent_id' => null,
-        'level' => null,
+        'static_revenue' => 0,
+        'dynamic_revenue' => 0,
+        'revenue' => 0,
     );
 }

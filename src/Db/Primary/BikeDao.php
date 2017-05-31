@@ -20,7 +20,7 @@ class BikeDao extends AbstractDao
         $where = ArgUtil::getArgs($where, array(
             'client_id',
             'agent_id',
-            'sn',
+            'id',
         )); 
 
         if ($where['client_id']) {
@@ -29,8 +29,8 @@ class BikeDao extends AbstractDao
         if ($where['agent_id']) {
             $qb->andWhere('agent_id = ' . $qb->createNamedParameter($where['agent_id']));
         }
-        if ($where['sn']) {
-            $qb->andWhere('sn = ' . $qb->createNamedParameter($where['sn']));
+        if ($where['id']) {
+            $qb->andWhere('id = ' . $qb->createNamedParameter($where['id']));
         }
     }
 

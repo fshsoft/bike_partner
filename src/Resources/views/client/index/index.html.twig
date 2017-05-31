@@ -58,8 +58,8 @@
                   <td>{{ map.passport[v.getId()].getUsername() }}</td>
                   <td>{{ v.getName() }}</td>
                   <td>
-                    <a title="编辑" href="{{ path('client_edit',{'id':v.getId() }) }}"><i class="fa fa-fw fa-edit"></i></a>
-                    <a title="分配车辆" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}"><i class="fa fa-fw fa-bicycle"></i></a>
+                    <a title="编辑" href="{{ path('client_edit',{'id':v.getId() }) }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-edit"></i>编辑</a>
+                    <a title="分配车辆" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-bicycle"></i>分配</a>
   
                   </td>
                 </tr>
@@ -98,8 +98,8 @@
             </div>
             <div class="modal-info">
                 <div class="form-group">
-                    <label for="bind-bike">车辆SN</label>
-                    <input id="bind-bike" name="sn" class="form-control" placeholder="请输入车辆SN"/> 
+                    <label for="bind-bike">车辆编号</label>
+                    <input id="bind-bike" name="id" class="form-control" placeholder="请输入车辆编号"/> 
                 </div>
             </div>
           </div>
@@ -123,7 +123,7 @@
               var url = '{{ path('bike_bind') }}';
               var data = {
                   clientId: $bindModal.find('button[name="confirm"]').data('id'),
-                  sn: $bindModal.find('input[name="sn"]').val()
+                  id: $bindModal.find('input[name="id"]').val()
               };
 
               $bindModal.find('button[name="confirm"]').prop('disabled', true);

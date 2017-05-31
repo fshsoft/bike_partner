@@ -6,44 +6,58 @@ use Bike\Partner\Exception\Debug\DebugException;
 use Bike\Partner\Exception\Logic\LogicException;
 use Bike\Partner\Service\AbstractService;
 use Bike\Partner\Util\ArgUtil;
-use Bike\Partner\Db\Primary\Bike;
-use Bike\Partner\Db\Primary\BikeSnGenrator;
+use Bike\Partner\Db\Primary\Bike as PrimaryBike;
+use Bike\Partner\Db\Partner\Bike as PartnerBike;
+use Bike\Partner\Db\Primary\BikeIdGenrator;
 use Bike\Partner\Db\Partner\Passport;
 
 class BikeService extends AbstractService
 {
     public function createBike(array $data)
     {
-        $bikeDao = $this->getBikeDao();
-        $bikeConn = $bikeDao->getConn();
-        $bikeSnGeneratorDao = $this->getBikeSnGeneratorDao(); 
-        $bikeSnGeneratorConn = $bikeSnGeneratorDao->getConn();
+        $primaryBikeDao = $this->getPrimaryBikeDao();
+        $primaryBikeConn = $primaryBikeDao->getConn();
+        $partnerBikeDao = $this->getPartnerBikeDao();
+        $partnerBikeConn = $partnerBikeDao->getConn();
+        $bikeIdGeneratorDao = $this->getBikeIdGeneratorDao();
+        $bikeIdGeneratorConn = $bikeIdGeneratorDao->getConn();
 
-        $bikeConn->beginTransaction();
-        $bikeSnGeneratorConn->beginTransaction();
+        $primaryBikeConn->beginTransaction();
+        $partnerBikeConn->beginTransaction();
+        $bikeIdGeneratorConn->beginTransaction();
         try {
-            $sn = $this->generateBikeSn();
-            $bike = new Bike();
-            $bike
-                ->setSn($sn)
-                ->setCreateTime(time());
-            $bikeDao->create($bike);
-            $bikeConn->commit();
-            $bikeSnGeneratorConn->commit();
+            $id = $this->generateBikeId();
+            $primaryBike = new PrimaryBike();
+            $time = time();
+            $primaryBike
+                ->setId($id)
+                ->setCreateTime($time);
+            $primaryBikeDao->create($primaryBike);
+
+            $partnerBike = new PartnerBike();
+            $partnerBike
+                ->setId($id)
+                ->setCreateTime($time);
+            $partnerBikeDao->create($partnerBike);
+
+            $primaryBikeConn->commit();
+            $partnerBikeConn->commit();
+            $bikeIdGeneratorConn->commit();
         } catch (\Exception $e) {
-            $bikeConn->rollBack();
-            $bikeSnGeneratorConn->rollBack();
+            $primaryBikeConn->rollBack();
+            $partnerBikeConn->rollBack();
+            $bikeIdGeneratorConn->rollBack();
             throw $e;
         }
     }
 
 
-    public function bindBike($sn, $clientId, $username = '')
+    public function bindBike($id, $clientId, $username = '')
     {
         try {
-            $bikeDao = $this->getBikeDao();
-            $where = ['sn'=>$sn];
-            $bike = $bikeDao->find($where);
+            $bikeDao = $this->getPartnerBikeDao();
+            
+            $bike = $bikeDao->find($id);
             if (!$bike) {
                 throw new LogicException("未找到车辆");
             }
@@ -75,12 +89,11 @@ class BikeService extends AbstractService
        
     }
 
-    public function unbindBike($sn)
+    public function unbindBike($id)
     {
         try {
-            $bikeDao = $this->getBikeDao();
-            $where = ['sn'=>$sn];
-            $bike = $bikeDao->find($where);
+            $bikeDao = $this->getPartnerBikeDao();
+            $bike = $bikeDao->find($id);
             if (!$bike) {
                 throw new LogicException("未找到车辆");
             }
@@ -108,16 +121,16 @@ class BikeService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeDao = $this->getBikeDao();
+        $bikeDao = $this->getPartnerBikeDao();
         $bikeList = $bikeDao->findList('*', $args, $offset, $pageNum, array(
-            'sn' => 'desc',
+            'id' => 'desc',
         ));
         if ($bikeList) {
             $agentIds = array();
             $clientIds = array();
             foreach ($bikeList as $v) {
-                $agentIds[] = $v->getId();
-                $clientIds[] = $v->getId();
+                $agentIds[] = $v->getAgentId();
+                $clientIds[] = $v->getClientId();
             }
             $agentDao = $this->container->get('bike.partner.dao.partner.agent');
             $agentMap = $agentDao->findMap('', array(
@@ -156,15 +169,13 @@ class BikeService extends AbstractService
         );
     }
 
-    public function getBikeBySn($sn)
+    public function getBikeById($id)
     {
-        $key = 'bike.sn.' . $sn;
+        $key = 'bike.id.' . $id;
         $bike = $this->getRequestCache($key);
         if (!$bike) {
-            $bikeDao = $this->getBikeDao();
-            $bike = $bikeDao->find(array(
-                'sn' => $sn,
-            ));
+            $bikeDao = $this->getPartnerBikeDao();
+            $bike = $bikeDao->find($id);
             if ($bike) {
                 $this->setRequestCache($key, $bike);
             }
@@ -172,20 +183,25 @@ class BikeService extends AbstractService
         return $bike;
     }
 
-    protected function generateBikeSn()
+    protected function generateBikeId()
     {
-        $bikeSnGeneratorDao = $this->getBikeSnGeneratorDao();
-        return $bikeSnGeneratorDao->save(array(), true);
+        $bikeIdGeneratorDao = $this->getBikeIdGeneratorDao();
+        return $bikeIdGeneratorDao->save(array(), true);
     }
 
-    protected function getBikeDao()
+    protected function getPartnerBikeDao()
+    {
+        return $this->container->get('bike.partner.dao.partner.bike');
+    }
+
+    protected function getPrimaryBikeDao()
     {
         return $this->container->get('bike.partner.dao.primary.bike');
     }
 
-    protected function getBikeSnGeneratorDao()
+    protected function getBikeIdGeneratorDao()
     {
-        return $this->container->get('bike.partner.dao.primary.bike_sn_generator');
+        return $this->container->get('bike.partner.dao.primary.bike_id_generator');
     }
 }
  

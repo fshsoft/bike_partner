@@ -14,30 +14,23 @@
       </ol>
     </section>
 
+
     <section class="content search-section" style="min-height:auto;">
           <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_1" data-toggle="tab">单车明细</a></li>
+              <li><a class="tab_link" href="{{ path('bike') }}" data-toggle="tab">单车明细</a></li>
               <li><a class="tab_link" href="{{ path('bike_revenue_daily') }}" data-toggle="tab">日收益管理</a></li>
-              <li><a class="tab_link" href="{{ path('bike_revenue_monthly') }}" data-toggle="tab">月收益管理</a></li>
+              <li class="active"><a href="#tab_3" data-toggle="tab">月收益管理</a></li>
             </ul>
             <div class="tab-content">
-              <div class="tab-pane active" id="tab_1">
-                <div class="box" style="border:none;margin-bottom:0px;">
-                  <div class="box-body" style="border:1px solid #eee;border-radius:3px;border-bottom:0;">
-                      <form method="get" id="search-form" class="form-inline">
-                        <input type="hidden" name="search" value="1">
-                        <div class="form-group col-xs-3">
-                          <label for="ID">单车编号：</label>
-                          <input type="text" class="form-control" name="id" style="border-radius:3px;" value="{{ app.request.query.get('id') }}"  id="ID" placeholder="请输入车辆编号">
-                        </div>
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>查询</button>
-                        
-                      </form>
-                  </div>
-                </div>
-
-                <!-- main content-->
+              <div class="tab-pane " id="tab_1">
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane " id="tab_2">
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane active" id="tab_3">
+                <!-- monthly profit -->
                 <div class="row" style="padding-top:15px;">
                   <div class="col-xs-12">
                     <div class="box" style="border-top:1px solid #eee;">
@@ -56,36 +49,17 @@
                       <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
                           <tbody><tr>
-                            <th>单车编号</th>
-                            <th>车锁编号</th>
-                            <th>代理商</th>
-                            <th>委托人</th>
+                            <th>日期</th>
+                            <th>月收益／元</th>
                             <th>操作</th>
                           </tr>
-          {% for v in list.bike %}
+          {% for v in list.log %}
                           <tr>
-                            <td>{{ v.getId() }}</td>
-                            <td>{{ v.getElockId() }}</td>
+                            <td>{{ date(v.getLogMonth()~'01 00:00:00').format('Y-m') }}</td>
+                            <td>{{ v.getRevenue() }}</td>
+                             
                             <td>
-          {% if map.agent[v.getAgentId()] is defined %}
-          {{ map.agent[v.getAgentId()].getName() }}
-          {% else %}
-          无
-          {% endif %}
-                            </td> 
-                            <td>
-          {% if map.client[v.getClientId()] is defined %}
-          {{ map.client[v.getClientId()].getName() }}
-          {% else %}
-          无
-          {% endif %}
-                            </td> 
-                            <td>
-          {% if v.getClientId() > 0 %}
-                                <a title="取消分配" class="btn btn-xs  btn-primary"  data-toggle="modal" data-name="{{ v.getId() }}" data-target="#delete-modal" data-id="{{ v.getId() }}">取消分配</a>
-          {% else %}
-                              <a title="分配车辆" class="btn btn-xs  btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}"><i class="fa fa-fw fa-bicycle"></i>分配</a>
-          {% endif %}
+                              <a href="" class="btn btn-xs  btn-primary">提现</a>
                             </td>
                           </tr>
           {% endfor %}
@@ -100,14 +74,8 @@
                     <!-- /.box -->
                   </div>
                 </div>
-                <!-- main content end-->
 
-              </div>
-              <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_2">
-              </div>
-              <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_3">
+                <!-- monthly profit end -->
               </div>
               <!-- /.tab-pane -->
             </div>
@@ -150,72 +118,14 @@
       </div>
     </div>    
 
-    <!-- 取消分配modal -->
-    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" style="margin-top:100px;">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="delete-modal-label">取消分配</h4>
-          </div>
-          <div class="modal-body">
-            <div class="panel panel-danger modal-error">
-              <div class="panel-heading"> 
-                <h3 class="panel-title">
-                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                  <span class="sr-only">Error:</span>
-                  <span>出错啦</span>
-                </h3> 
-              </div> 
-              <div class="panel-body"> 
-              </div> 
-            </div>
-            <div class="alert alert-danger modal-info">
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" name="confirm">确定</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <script type="text/javascript">
     window.onload = function(){
-
       $('.tab_link').click(function(e){
         e.preventDefault();
         var link = $(this).attr('href');
         window.location.href = link;
       });
-
-      /***  取消分配 >>**/
-      var $deleteModal = $('#delete-modal');
-      $deleteModal.on('show.bs.modal', function (e) {
-          $deleteModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
-          $deleteModal.find('.modal-error').hide();
-          $deleteModal.find('.modal-info').html('确认取消分配车辆"'+$(e.relatedTarget).data('name')+'"');
-      });
-
-      $deleteModal.find('button[name="confirm"]').click(function(){
-          var url = '{{ path('bike_unbind') }}';
-          var data = {
-              id: $deleteModal.find('button[name="confirm"]').data('id')
-          };
-
-          $deleteModal.find('button[name="confirm"]').prop('disabled', true);
-          $.post(url, data, function(result){
-              if (result.errno === 0) {
-                  window.location.reload();
-              } else {
-                  $deleteModal.find('.modal-error .panel-body').html(result.errmsg);
-                  $deleteModal.find('.modal-error').show();
-              }
-              $deleteModal.find('button[name="confirm"]').prop('disabled', false);
-          }, 'json'); 
-      });
-      /**<<<<取消分配 END **/
-
 
       /**分配 》》》***/
       var $bindModal = $('#bind-modal');
