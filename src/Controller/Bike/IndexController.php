@@ -41,6 +41,7 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
         if ($request->isMethod('post')) {
             try {
                 $bikeService = $this->get('bike.partner.service.bike');
@@ -58,6 +59,7 @@ class IndexController extends AbstractController
      */
     public function bindAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
         if ($request->isMethod('post')) {
             try {
                 $id = $request->get('id','');
@@ -78,11 +80,52 @@ class IndexController extends AbstractController
      */
     public function unbindAction(Request $request)
     {
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
         if ($request->isMethod('post')) {
             try {
                 $id = $request->get('id');
                 $bikeService = $this->get('bike.partner.service.bike');
                 $bikeService->unbindBike($id);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
+        return array();
+    }
+
+     /**
+     * @Route("/bind_agent", name="bike_bind_agent")
+     */
+    public function bindAgentAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
+        if ($request->isMethod('post')) {
+            try {
+                $id = $request->get('id','');
+                $AgentId = $request->get('agentId',0);
+                $username = $request->get('username','');
+                $bikeService = $this->get('bike.partner.service.bike');
+                $bikeService->bindBikeAgent($id,$AgentId,$username);
+                return $this->jsonSuccess();
+            } catch (\Exception $e) {
+                return $this->jsonError($e);
+            }
+        }
+        return array();
+    }
+
+    /**
+     * @Route("/unbind_agent", name="bike_unbind_agent")
+     */
+    public function unbindAgentAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
+        if ($request->isMethod('post')) {
+            try {
+                $id = $request->get('id');
+                $bikeService = $this->get('bike.partner.service.bike');
+                $bikeService->unbindBikeAgent($id);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
                 return $this->jsonError($e);

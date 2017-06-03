@@ -38,10 +38,12 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">列表</h3>
-
+{% set role = app.user.getRole() %}
+{% if role == 'ROLE_ADMIN' %}
               <div class="box-tools">
                 <a href="{{ path('cs_staff_new') }}" class="btn btn-sm btn-block btn-primary">新增</a>
               </div>
+{% endif %}
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">

@@ -27,6 +27,8 @@ class AppKernel extends Kernel
 
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 
+            new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+
             new Bike\Partner\BikePartnerBundle(),
         );
 

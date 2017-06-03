@@ -45,10 +45,13 @@
                         <h3 class="box-title">列表</h3>
 
                         <div class="box-tools">
+{% set role = app.user.getRole() %}
+{% if role in ['ROLE_ADMIN','ROLE_CS_STAFF'] %}
                           <a href="{{ path('bike_new') }}" class="btn btn-sm  btn-primary"><i class="fa fa-plus"></i>新增</a>
-                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a>
-                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a>
-                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a>
+                          {# <a href="{{ path('excel_import',{type:'bike'}) }}" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a> #}
+                          {# <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a> #}
+                          {# <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a> #}
+{% endif %}
                         </div>
 
                       </div>
@@ -59,7 +62,7 @@
                             <th>单车编号</th>
                             <th>车锁编号</th>
                             <th>代理商</th>
-                            <th>委托人</th>
+                            <th>车主</th>
                             <th>操作</th>
                           </tr>
           {% for v in list.bike %}
@@ -81,11 +84,21 @@
           {% endif %}
                             </td> 
                             <td>
+{% if role in ['ROLE_ADMIN','ROLE_CS_STAFF'] %}
           {% if v.getClientId() > 0 %}
-                                <a title="取消分配" class="btn btn-xs  btn-primary"  data-toggle="modal" data-name="{{ v.getId() }}" data-target="#delete-modal" data-id="{{ v.getId() }}">取消分配</a>
+                                <a title="取消分配车主" class="btn btn-xs  btn-primary"  data-toggle="modal" data-name="{{ v.getId() }}" data-target="#delete-modal" data-id="{{ v.getId() }}">取消分配车主</a>
           {% else %}
-                              <a title="分配车辆" class="btn btn-xs  btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}"><i class="fa fa-fw fa-bicycle"></i>分配</a>
+                              <a title="分配车主" class="btn btn-xs  btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}"><i class="fa fa-fw fa-bicycle"></i>分配车主</a>
           {% endif %}
+
+          {% if v.getAgentId() > 0 %}
+                                <a title="取消分配代理商" class="btn btn-xs  btn-primary"  data-toggle="modal" data-name="{{ v.getId() }}" data-target="#cancel-agent-modal" data-id="{{ v.getId() }}">取消分配代理商</a>
+          {% else %}
+                              <a title="分配代理商" class="btn btn-xs  btn-primary" data-toggle="modal" data-target="#bind-agent-modal" data-id="{{ v.getId() }}">分配代理商</a>
+          {% endif %}
+
+
+{% endif %}
                             </td>
                           </tr>
           {% endfor %}
@@ -122,7 +135,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="bind-card-modal-label">分配车辆</h4>
+            <h4 class="modal-title" id="bind-card-modal-label">分配车主</h4>
           </div>
           <div class="modal-body">
             <div class="panel panel-danger modal-error">
@@ -139,7 +152,7 @@
             <div class="modal-info">
                 <div class="form-group">
                     <label for="bind-bike">用户名</label>
-                    <input id="bind-bike" name="username" class="form-control" placeholder="请输入委托人用户名"/> 
+                    <input id="bind-bike" name="username" class="form-control" placeholder="请输入车主用户名"/> 
                 </div>
             </div>
           </div>
@@ -156,7 +169,72 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="delete-modal-label">取消分配</h4>
+            <h4 class="modal-title" id="delete-modal-label">取消分配车主</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="alert alert-danger modal-info">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" name="confirm">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分配代理商modal -->
+    <div class="modal fade select-agent-modal" id="bind-agent-modal" tabindex="-1" role="dialog" aria-labelledby="bind-card-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="bind-card-modal-label">分配代理商</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="modal-info">
+                <div class="form-group">
+                    <label for="bind-bike">用户名</label>
+                    <input id="bind-bike" name="username" class="form-control" placeholder="请输入代理商用户名"/> 
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" name="confirm">分配</button>
+          </div>
+        </div>
+      </div>
+    </div>    
+    <!-- 分配代理商modal end-->
+
+    <!-- 取消分配代理商modal -->
+    <div class="modal fade" id="cancel-agent-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="delete-modal-label">取消分配代理商</h4>
           </div>
           <div class="modal-body">
             <div class="panel panel-danger modal-error">
@@ -240,6 +318,65 @@
                   $bindModal.find('.modal-error').show();
               }
               $bindModal.find('button[name="confirm"]').prop('disabled', false);
+          }, 'json'); 
+      });
+      /*** 《《《分配 END***/
+
+
+
+
+
+      /***  取消分配代理商 >>**/
+      var $cancelAgentModal = $('#cancel-agent-modal');
+      $cancelAgentModal.on('show.bs.modal', function (e) {
+          $cancelAgentModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
+          $cancelAgentModal.find('.modal-error').hide();
+          $cancelAgentModal.find('.modal-info').html('确认取消分配代理商"'+$(e.relatedTarget).data('name')+'"');
+      });
+
+      $cancelAgentModal.find('button[name="confirm"]').click(function(){
+          var url = '{{ path('bike_unbind_agent') }}';
+          var data = {
+              id: $cancelAgentModal.find('button[name="confirm"]').data('id')
+          };
+
+          $cancelAgentModal.find('button[name="confirm"]').prop('disabled', true);
+          $.post(url, data, function(result){
+              if (result.errno === 0) {
+                  window.location.reload();
+              } else {
+                  $cancelAgentModal.find('.modal-error .panel-body').html(result.errmsg);
+                  $cancelAgentModal.find('.modal-error').show();
+              }
+              $cancelAgentModal.find('button[name="confirm"]').prop('disabled', false);
+          }, 'json'); 
+      });
+      /**<<<<取消分配 END **/
+
+
+      /**分配 》》》***/
+      var $bindAgentModal = $('#bind-agent-modal');
+      $bindAgentModal.on('show.bs.modal', function (e) {
+          $bindAgentModal.find('button[name="confirm"]').data('id', $(e.relatedTarget).data('id'));
+          $bindAgentModal.find('.modal-error').hide();
+      });
+
+      $bindAgentModal.find('button[name="confirm"]').click(function(){ 
+          var url = '{{ path('bike_bind_agent') }}';
+          var data = {
+              id: $bindAgentModal.find('button[name="confirm"]').data('id'),
+              username: $bindAgentModal.find('input[name="username"]').val()
+          };
+
+          $bindAgentModal.find('button[name="confirm"]').prop('disabled', true);
+          $.post(url, data, function(result){
+              if (result.errno === 0) {
+                  window.location.reload();
+              } else {
+                  $bindAgentModal.find('.modal-error .panel-body').html(result.errmsg);
+                  $bindAgentModal.find('.modal-error').show();
+              }
+              $bindAgentModal.find('button[name="confirm"]').prop('disabled', false);
           }, 'json'); 
       });
       /*** 《《《分配 END***/

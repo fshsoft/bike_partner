@@ -30,6 +30,36 @@
               </div>
               <!-- /.tab-pane -->
               <div class="tab-pane active" id="tab_3">
+                <div class="box" style="border:none;margin-bottom:0px;">
+                  <div class="box-body" style="border:1px solid #eee;border-radius:3px;border-bottom:0;">
+                      <form method="get" id="search-form" class="form-inline">
+                        <input type="hidden" name="search" value="1">
+                        <div class="form-group">
+                          <label>起始时间:</label>
+                          <div class="input-group date">
+                            <div class="input-group-addon">
+                              <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" name="start_time" value="{{ app.request.get('start_time') }}" class="form-control pull-right datepicker">
+                          </div>
+                        </div>
+
+                        <div class="form-group" style="margin-left:10px;">
+                          <label>结束时间:</label>
+                          <div class="input-group date">
+                            <div class="input-group-addon">
+                              <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" name="end_time" value="{{ app.request.get('end_time') }}" class="form-control pull-right datepicker">
+                          </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>查询</button>
+                        
+                      </form>
+                  </div>
+                </div>
+
                 <!-- monthly profit -->
                 <div class="row" style="padding-top:15px;">
                   <div class="col-xs-12">
@@ -38,10 +68,10 @@
                         <h3 class="box-title">列表</h3>
 
                         <div class="box-tools">
-                          <a href="{{ path('bike_new') }}" class="btn btn-sm  btn-primary"><i class="fa fa-plus"></i>新增</a>
-                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-upload"></i>导入</a>
-                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-download"></i>导出</a>
-                          <a href="" class="btn btn-sm  btn-default"><i class="fa fa-qrcode"></i>导出二维码</a>
+{% set role = app.user.getRole() %}
+{% if role in ['ROLE_ADMIN','ROLE_AGENT','ROLE_CLIENT'] %}
+                          <a href="{{ path('excel_export',{type:'month_profit'}) }}" class="btn btn-sm  btn-default export_btn"><i class="fa fa-download"></i>导出</a>
+{% endif %}
                         </div>
 
                       </div>
@@ -153,6 +183,22 @@
           }, 'json'); 
       });
       /*** 《《《分配 END***/
+
+      $('.datepicker').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm',
+        language: 'zh-CN',
+        minViewMode: 1,
+      });
+
+      $('.export_btn').click(function(e){
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var start_time = $('input[name=start_time]').val();
+        var end_time = $('input[name=end_time]').val();
+        var link = url+'?start_time='+start_time+'&&end_time='+end_time;
+        window.location.href = link;
+      })
 
 
     }

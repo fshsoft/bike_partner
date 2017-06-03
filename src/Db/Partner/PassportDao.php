@@ -18,14 +18,18 @@ class PassportDao extends AbstractDao
     protected function applyWhere(QueryBuilder $qb, array $where, $dbOp)
     {
         $where = ArgUtil::getArgs($where, array(
-            'username',
             'id.in',
+            'username',
+            'type',
         ));
+        if ($where['id.in']) {
+            $qb->andWhere('id IN (' . $qb->createNamedParameter($where['id.in'], Connection::PARAM_INT_ARRAY) . ')');
+        }
         if ($where['username']) {
             $qb->andWhere('username = ' . $qb->createNamedParameter($where['username']));
         }
-        if ($where['id.in']) {
-            $qb->andWhere('id IN (' . $qb->createNamedParameter($where['id.in'], Connection::PARAM_INT_ARRAY) . ')');
+        if ($where['type']) {
+            $qb->andWhere('type = ' . $qb->createNamedParameter($where['type']));
         }
     }
 

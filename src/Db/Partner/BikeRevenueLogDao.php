@@ -21,6 +21,8 @@ class BikeRevenueLogDao extends AbstractDao
             'client_id',
             'agent_id',
             'log_date',
+            'start_time',
+            'end_time',
         )); 
 
         if ($where['client_id']) {
@@ -31,6 +33,12 @@ class BikeRevenueLogDao extends AbstractDao
         }
         if ($where['log_date']) {
             $qb->andWhere('log_date = ' . $qb->createNamedParameter($where['log_date']));
+        }
+        if ($where['start_time']) {
+            $qb->andWhere('log_date >= ' . $qb->createNamedParameter($where['start_time']));
+        }
+        if ($where['end_time']) {
+            $qb->andWhere('log_date <= ' . $qb->createNamedParameter($where['end_time']));
         }
     }
 

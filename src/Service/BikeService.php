@@ -77,7 +77,7 @@ class BikeService extends AbstractService
             }
             
             if (!$client) {
-                throw new LogicException("没有找到委托人");
+                throw new LogicException("没有找到车主");
             }
 
             $data = ['client_id'=>$client->getId()];
@@ -109,6 +109,67 @@ class BikeService extends AbstractService
         }
 
     }
+
+
+    public function bindBikeAgent($id, $agentId, $username = '')
+    {
+        try {
+            $bikeDao = $this->getPartnerBikeDao();
+            
+            $bike = $bikeDao->find($id);
+            if (!$bike) {
+                throw new LogicException("未找到车辆");
+            }
+            if ($bike->getAgentId() > 0) {
+                throw new LogicException("车辆已被分配");
+            }
+
+            if ($agentId) {
+                $agentDao = $this->container->get('bike.partner.dao.partner.agent');
+                $agent = $agentDao->find($agentId);    
+            } elseif ($username) {
+                $passportDao = $this->container->get('bike.partner.dao.partner.passport');
+                $wherePass = ['username'=>$username,'type'=>Passport::TYPE_AGENT];
+                $agent = $passportDao->find($wherePass);
+            } else {
+                throw new LogicException("参数错误");
+            }
+            
+            if (!$agent) {
+                throw new LogicException("没有找到代理商");
+            }
+
+            $data = ['agent_id'=>$agent->getId()];
+            $bikeDao->update($bike->getId(),$data);
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+       
+    }
+
+    public function unbindBikeAgent($id)
+    {
+        try {
+            $bikeDao = $this->getPartnerBikeDao();
+            $bike = $bikeDao->find($id);
+            if (!$bike) {
+                throw new LogicException("未找到车辆");
+            }
+            if ($bike->getAgentId() <= 0) {
+                throw new LogicException("车辆未被分配");
+            }
+
+            $data = ['agent_id'=>0];
+            $bikeDao->update($bike->getId(),$data);
+
+        } catch (\Exception $e) {
+            throw $e;
+        }
+
+    }
+
+
 
     public function searchBike(array $args, $page, $pageNum)
     {

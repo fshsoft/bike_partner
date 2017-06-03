@@ -1,0 +1,150 @@
+{% extends 'BikePartnerBundle::layout.html.twig' %}
+
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        导入
+        <small></small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><i class="fa fa-dashboard"></i> 首页</li>
+        <li>导入</li>
+        <li class="active">导入{{ '什么' }}</li>
+      </ol>
+    </section>
+<style type="text/css">
+
+.a-upload {
+    padding: 0px 10px;
+    line-height: 38px;
+    position: relative;
+    cursor: pointer;
+    color: #fff;
+    background: #3c8dbc;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    margin:0 auto;
+    margin-top: 170px;
+}
+
+.a-upload  input {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    cursor: pointer
+}
+
+.a-upload:hover {
+    color: #444;
+    background: #eee;
+    border-color: #ccc;
+    text-decoration: none
+}
+</style>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <form id="form" enctype="multipart/form-data" method="post">
+            <div style="min-height:400px;text-align:center;background:#ccc">
+              <a href="javascript:;" class="a-upload">
+                      <input type="file" name="file"  onchange="getFileName(this)" id="">点击这里选择文件
+                      <span style="position: absolute;left: 140px;top:0px;min-width:140px;" id="file_name"></span>
+              </a>
+              <br/>
+              <a class="btn btn-primary import"  data-toggle="modal"  data-target="#delete-modal">确认导入</a>
+            </div>
+            </form>
+            
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+      <!-- 导入确认 -->
+      <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-label" style="margin-top:100px;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="delete-modal-label">确认导入</h4>
+          </div>
+          <div class="modal-body">
+            <div class="panel panel-danger modal-error">
+              <div class="panel-heading"> 
+                <h3 class="panel-title">
+                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                  <span class="sr-only">Error:</span>
+                  <span>出错啦</span>
+                </h3> 
+              </div> 
+              <div class="panel-body"> 
+              </div> 
+            </div>
+            <div class="alert alert-danger modal-info">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" name="confirm">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+    <script type="text/javascript">
+      function getFileName(obj)
+      {
+          var pos = obj.value.lastIndexOf("\\")*1;
+          var file_name = obj.value.substring(pos+1);
+          $(obj).next().html(file_name);;
+      }
+      window.onload = function(){
+        $('.import').click(function(e){
+
+        });
+
+
+        var $deleteModal = $('#delete-modal');
+        $deleteModal.on('show.bs.modal', function (e) {
+            $deleteModal.find('.modal-error').hide();
+            $deleteModal.find('.modal-info').html('确认要导入数据吗');
+        });
+
+        $deleteModal.find('button[name="confirm"]').click(function(){
+          doUpload();
+          return false;
+        });
+      }
+
+      function doUpload() {  
+         var formData = new FormData($("#form")[0]);  
+         $.ajax({  
+              url: '{{ path('excel_import',{type:type }) }}',
+              type: 'POST',  
+              data: formData,  
+              async: false,  
+              cache: false,  
+              contentType: false,  
+              processData: false,  
+              success: function (result) {  
+                if (result.errno === 0) {
+                  alert('成功');
+                } else {
+                  alert(result.errmsg);
+                }
+              },  
+              error: function (returndata) {  
+                  alert(returndata);  
+              }  
+         });  
+    }  
+    </script>
+{% endblock %}
