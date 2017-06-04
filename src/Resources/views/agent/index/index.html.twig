@@ -59,7 +59,10 @@
                   <td>{{ v.getName() }}</td>
                   <td>
                     <a href="{{ path('agent_edit',{'id':v.getId() }) }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-edit"></i>编辑</a>
+{% set role = app.user.getRole() %}
+{% if role in ['ROLE_ADMIN','ROLE_CS_STAFF'] %}
                     <a title="分配车辆" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-bicycle"></i>分配</a>
+{% endif %}
                   </td>
                 </tr>
 {% endfor %}

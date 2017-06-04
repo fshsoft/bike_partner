@@ -32,7 +32,17 @@ class IndexController extends AbstractController
         $bikeService = $this->get('bike.partner.service.bike');
         $page = $request->query->get('p');
         $pageNum = 10;
-        return $bikeService->searchBike($request->query->all(), $page, $pageNum);
+
+        $args = $request->query->all();
+        $user = $this->getUser();
+        $role = $user->getRole();
+        if ($role == 'ROLE_AGENT') {
+            $args['agent_id'] = $user->getId();
+        } elseif ($role == 'ROLE_CLIENT') {
+            $args['client_id'] = $user->getId();
+        }
+
+        return $bikeService->searchBike($args, $page, $pageNum);
     }
 
     /**
