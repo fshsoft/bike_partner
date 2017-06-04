@@ -8,6 +8,8 @@ use Bike\Partner\Db\Partner\Passport;
 
 class User extends Passport implements UserInterface
 {
+    protected $privileges;
+    
     protected $roleMap = array(
         Passport::TYPE_ADMIN => 'ROLE_ADMIN',
         Passport::TYPE_CS_STAFF => 'ROLE_CS_STAFF',
@@ -56,6 +58,18 @@ class User extends Passport implements UserInterface
     {
         return $this->getCol('username');
     }
+
+
+    public function setPrivileges($privileges)
+    {
+        $this->privileges = $privileges;
+    }
+
+    public function getPrivileges()
+    {
+        return $this->privileges;
+    }
+
 
     public function eraseCredentials()
     {

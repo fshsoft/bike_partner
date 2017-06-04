@@ -20,7 +20,7 @@ class BikeRevenueLogDao extends AbstractDao
         $where = ArgUtil::getArgs($where, array(
             'client_id',
             'agent_id',
-            'log_date',
+            'log_day',
             'start_time',
             'end_time',
         )); 
@@ -31,14 +31,14 @@ class BikeRevenueLogDao extends AbstractDao
         if ($where['agent_id']) {
             $qb->andWhere('agent_id = ' . $qb->createNamedParameter($where['agent_id']));
         }
-        if ($where['log_date']) {
-            $qb->andWhere('log_date = ' . $qb->createNamedParameter($where['log_date']));
+        if ($where['log_day']) {
+            $qb->andWhere('log_day = ' . $qb->createNamedParameter($where['log_day']));
         }
         if ($where['start_time']) {
-            $qb->andWhere('log_date >= ' . $qb->createNamedParameter($where['start_time']));
+            $qb->andWhere('log_day >= ' . $qb->createNamedParameter($where['start_time']));
         }
         if ($where['end_time']) {
-            $qb->andWhere('log_date <= ' . $qb->createNamedParameter($where['end_time']));
+            $qb->andWhere('log_day <= ' . $qb->createNamedParameter($where['end_time']));
         }
     }
 

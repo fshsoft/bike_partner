@@ -20,10 +20,10 @@ class BikeRevenueService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeRevenueLogDao = $this->getBikeRevenueLogDao();
-        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_date', $args, $offset, $pageNum, ['log_date' => 'desc'],['log_date']);
+        $bikeRevenueLogDao = $this->getRevenueLogByUserRole();
+        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc'],['log_day']);
         if ($logList) {
-        	$total = $bikeRevenueLogDao->findNum($args,'log_date',['log_date']);
+        	$total = $bikeRevenueLogDao->findNum($args,'log_day',['log_day']);
         } else {
             $logList = array();
             $total = 0;
@@ -61,7 +61,7 @@ class BikeRevenueService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeRevenueLogDao = $this->getBikeRevenueLogDao();
+        $bikeRevenueLogDao = $this->getRevenueLogByUserRole();
         $logList = $bikeRevenueLogDao->findList('*', $args, $offset, $pageNum, ['id' => 'desc']);
         if ($logList) {
             $agentIds = array();
@@ -119,7 +119,7 @@ class BikeRevenueService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeRevenueLogDao = $this->getBikeRevenueLogDao();
+        $bikeRevenueLogDao = $this->getRevenueLogByUserRole();
         $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_month', $args, $offset, $pageNum, ['log_month' => 'desc'],['log_month']);
         if ($logList) {
         	$total = $bikeRevenueLogDao->findNum($args,'log_month',['log_month']);
@@ -154,4 +154,26 @@ class BikeRevenueService extends AbstractService
 	{
 		return $this->container->get('bike.partner.dao.partner.bike_revenue_log');
 	}
+
+    public function getRevenueLogByUserRole()
+    {
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $role = $user->getRole();
+        switch ($role) {
+            case 'ROLE_ADMIN':
+                $dao = $this->container->get('bike.partner.dao.partner.bike_revenue_log');
+                break;
+            case 'ROLE_AGENT':
+                $dao = $this->container->get('bike.partner.dao.partner.agent_revenue_log');
+                break;
+            case 'ROLE_CLIENT':
+                $dao = $this->container->get('bike.partner.dao.partner.client_revenue_log');
+                break;
+            default:
+                throw new LogicException("访问受限");
+                break;
+        }
+        return $dao;
+
+    }
 }

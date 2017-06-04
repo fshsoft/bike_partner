@@ -21,6 +21,7 @@ class BikeDao extends AbstractDao
             'id',
             'client_id',
             'agent_id',
+            'agent_id.in',
         )); 
 
         if ($where['id']) {
@@ -31,6 +32,9 @@ class BikeDao extends AbstractDao
         }
         if ($where['agent_id']) {
             $qb->andWhere('agent_id = ' . $qb->createNamedParameter($where['agent_id']));
+        }
+        if ($where['agent_id.in']) {
+            $qb->andWhere('agent_id IN (' . $qb->createNamedParameter($where['agent_id.in'], Connection::PARAM_INT_ARRAY) . ')');
         }
         
     }

@@ -20,6 +20,12 @@ class UserProvider implements UserProviderInterface
         if ($passport) {
             $user = new User();
             $user->fromArray($passport->toArray());
+
+            //privilege
+            // $securityService = $this->container->get('bike.partner.service.security');
+            // $privileges = $securityService->getPrivilegeMapByAdminPassportId($user->getId());
+            // $user->setPrivileges($privileges);
+
             return $user;
         }
 

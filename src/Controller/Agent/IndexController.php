@@ -23,8 +23,8 @@ class IndexController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
-        $this->denyAccessUnlessGranted('view', 'agent');
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
+        // $this->denyAccessUnlessGranted('view', 'agent');
 
         $agentService = $this->get('bike.partner.service.agent');
         $page = $request->query->get('p');
@@ -45,7 +45,7 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
         $agentService = $this->get('bike.partner.service.agent');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
@@ -69,7 +69,7 @@ class IndexController extends AbstractController
      */
     public function editAction(Request $request,$id)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
         $agentService = $this->get('bike.partner.service.agent');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
@@ -93,7 +93,7 @@ class IndexController extends AbstractController
      */
     public function parentAgeantAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT'), 'role');
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
         try {
             $level = $request->get('level');
             $id = $request->get('id',null);

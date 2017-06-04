@@ -145,6 +145,12 @@ class AdminService extends AbstractService
         );
     }
 
+    public function getAllAdminPrivilegeListByPassportId($id)
+    {
+
+    }
+
+
     protected function validateName($name)
     {
         if (!$name) {

@@ -11,6 +11,7 @@ class AgentExtension extends AbstractExtension
         return array(
             new \Twig_SimpleFunction('bike_parter_agent_parent', array($this, 'getParentLevelAgent')),
             new \Twig_SimpleFunction('bike_parter_agent_levelmap', array($this, 'getLevelMap')),
+            new \Twig_SimpleFunction('bike_parter_agent_getone', array($this, 'getAgentById')),
         );
     }
 
@@ -33,6 +34,14 @@ class AgentExtension extends AbstractExtension
         $agentService = $this->container->get('bike.partner.service.agent');
         $map = $agentService->getLevelMap();
         return $map;
+    }
+
+    public function getAgentById($id)
+    {
+        $agentService = $this->container->get('bike.partner.service.agent');
+        $agent = $agentService->getAgent($id);
+        return $agent;
+
     }
 
 }

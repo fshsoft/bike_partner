@@ -114,19 +114,29 @@ class BikeService extends AbstractService
     public function bindBikeAgent($id, $agentId, $username = '')
     {
         try {
+
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            $role = $user->getRole();
+
             $bikeDao = $this->getPartnerBikeDao();
             
             $bike = $bikeDao->find($id);
             if (!$bike) {
                 throw new LogicException("未找到车辆");
             }
-            if ($bike->getAgentId() > 0) {
-                throw new LogicException("车辆已被分配");
+            if ($role == 'ROLE_AGENT') {
+                if ($bike->getAgentId() != $user->getId()) {
+                    throw new LogicException("车辆已被分配");    
+                }
+            } else {
+                if ($bike->getAgentId() > 0) {
+                    throw new LogicException("车辆已被分配");
+                }
             }
 
+            $agentService = $this->container->get('bike.partner.service.agent');
             if ($agentId) {
-                $agentDao = $this->container->get('bike.partner.dao.partner.agent');
-                $agent = $agentDao->find($agentId);    
+                $agent = $agentService->getAgent($agentId);    
             } elseif ($username) {
                 $passportDao = $this->container->get('bike.partner.dao.partner.passport');
                 $wherePass = ['username'=>$username,'type'=>Passport::TYPE_AGENT];
@@ -137,6 +147,14 @@ class BikeService extends AbstractService
             
             if (!$agent) {
                 throw new LogicException("没有找到代理商");
+            }
+
+            if ($role == 'ROLE_AGENT') {
+                $agent = $agentService->getAgent($agent->getId());
+                //判断是否是子代理商
+                if ($agent->getParentId() != $user->getId()) {
+                    throw new LogicException("只能管理下级代理商");
+                }       
             }
 
             $data = ['agent_id'=>$agent->getId()];
@@ -150,17 +168,32 @@ class BikeService extends AbstractService
 
     public function unbindBikeAgent($id)
     {
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $role = $user->getRole();
+        $userId = $user->getId();
         try {
             $bikeDao = $this->getPartnerBikeDao();
             $bike = $bikeDao->find($id);
             if (!$bike) {
                 throw new LogicException("未找到车辆");
             }
+
             if ($bike->getAgentId() <= 0) {
                 throw new LogicException("车辆未被分配");
             }
 
-            $data = ['agent_id'=>0];
+            if ($role == 'ROLE_AGENT') {
+                //判断是否是子代理商
+                $agentService = $this->container->get('bike.partner.service.agent');
+                $agentIds = $agentService->getChildsAgentIdArray($userId);
+                if (!in_array($bike->getAgentId(), $agentIds)) {
+                    throw new LogicException("只能管理下级代理商");
+                }
+                $data = ['agent_id'=>$userId];
+            } else {
+                $data = ['agent_id'=>0];    
+            }
+
             $bikeDao->update($bike->getId(),$data);
 
         } catch (\Exception $e) {

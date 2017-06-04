@@ -186,6 +186,48 @@ class AgentService extends AbstractService
         return $agent;
     }
 
+    public function getChildsAgentIdArray($agentId)
+    {
+        $agent = $this->getAgent($agentId);
+        if (!$agent) {
+            throw new LogicException("没有找到代理商");
+        } 
+        $idArray = [];
+        $level = $agent->getLevel();
+        $agentDao = $this->getAgentDao();
+        if ($level == Agent::LEVEL_THREE) {
+            return $idArray;
+        }
+        if ($level == Agent::LEVEL_TWO) {
+            $where = ['parent_id'=>$agentId];
+            $list = $agentDao->findList('id',$where,0,0);
+            if ($list) {
+                foreach ($list as $each) {
+                    array_push($idArray, $each->getId());
+                }
+            }
+            return $idArray;
+        }
+        if ($level == Agent::LEVEL_ONE) {
+            $where = ['parent_id'=>$agentId];
+            $list2 = $agentDao->findList('id',$where,0,0);
+            if ($list2) {
+                foreach ($list2 as $each) {
+                    array_push($idArray, $each->getId());
+                }
+                $where = ['parent_id.in'=>$idArray];
+                $list3 = $agentDao->findList('id',$where,0,0);
+                if ($list3) {
+                    foreach ($list3 as $each3) {
+                        array_push($idArray, $each3->getId());
+                    }
+                }
+            }
+            return $idArray;
+        }
+
+    }
+
 
     public function getParentAgent($level)
     {
@@ -196,7 +238,7 @@ class AgentService extends AbstractService
         $agentDao = $this->getAgentDao();
 
         $where = ['level'=>$level-1];
-        $agents = $agentDao->findList('id,name',$where);
+        $agents = $agentDao->findList('id,name',$where,0,0);
 
         if ($agents) {
             return $agents;

@@ -20,7 +20,7 @@ class BikeRevenueLog extends AbstractEntity
         'client_percent' => 0,
         'type' => null,
         'revenue' => 0,
-        'log_date' => '',
+        'log_day' => '',
         'log_month' => null,
         'log_time' => null,
     );

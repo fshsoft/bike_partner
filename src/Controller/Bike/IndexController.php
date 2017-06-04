@@ -37,7 +37,11 @@ class IndexController extends AbstractController
         $user = $this->getUser();
         $role = $user->getRole();
         if ($role == 'ROLE_AGENT') {
-            $args['agent_id'] = $user->getId();
+            //所有的下级
+            $agentService = $this->get('bike.partner.service.agent');
+            $agentIds = $agentService->getChildsAgentIdArray($user->getId());
+            array_push($agentIds, $user->getId());
+            $args['agent_id.in'] = $agentIds;
         } elseif ($role == 'ROLE_CLIENT') {
             $args['client_id'] = $user->getId();
         }
@@ -109,7 +113,10 @@ class IndexController extends AbstractController
      */
     public function bindAgentAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF','ROLE_AGENT'], 'role');
+
+        //代理商三级没有权限voter
+
         if ($request->isMethod('post')) {
             try {
                 $id = $request->get('id','');
@@ -130,7 +137,10 @@ class IndexController extends AbstractController
      */
     public function unbindAgentAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF','ROLE_AGENT'], 'role');
+
+        //代理商三级没有权限voter
+
         if ($request->isMethod('post')) {
             try {
                 $id = $request->get('id');

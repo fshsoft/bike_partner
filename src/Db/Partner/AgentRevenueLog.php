@@ -13,7 +13,7 @@ class AgentRevenueLog extends AbstractEntity
         'agent_id' => null,
         'type' => null,
         'revenue' => 0,
-        'log_date' => '',
+        'log_day' => '',
         'log_month' => null,
         'log_time' => null,
     );

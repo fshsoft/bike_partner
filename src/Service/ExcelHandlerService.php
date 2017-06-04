@@ -91,7 +91,9 @@ class ExcelHandlerService extends AbstractService
 		$result['title'] = ['日期','月收益／元'];
 		$result['data'] = [];
 
-		$bikeRevenueLogDao = $this->container->get('bike.partner.dao.partner.bike_revenue_log');
+		$revenueService = $this->container->get('bike.partner.service.bike_revenue');
+
+		$bikeRevenueLogDao = $revenueService->getRevenueLogByUserRole();
         $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_month', $args, 0, 0, ['log_month' => 'desc'],['log_month']);
         if ($logList) {
         	foreach ($logList as $log) {
@@ -110,8 +112,11 @@ class ExcelHandlerService extends AbstractService
 		$result['title'] = ['日期','日收益／元'];
 		$result['data'] = [];
 
-		$bikeRevenueLogDao = $this->container->get('bike.partner.dao.partner.bike_revenue_log');
-        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_date', $args, 0, 0, ['log_date' => 'desc'],['log_date']);
+		$revenueService = $this->container->get('bike.partner.service.bike_revenue');
+
+		$bikeRevenueLogDao = $revenueService->getRevenueLogByUserRole();
+
+        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_day', $args, 0, 0, ['log_day' => 'desc'],['log_day']);
         if ($logList) {
         	foreach ($logList as $log) {
         		$temp = [];
