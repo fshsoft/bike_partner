@@ -15,8 +15,184 @@
                             <parameter>ROLE_ADMIN</parameter>
                         </parameter>
                     </parameter>
+                    <parameter key="edit" type="collection">
+                        <parameter key="name">编辑</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="list" type="collection">
+                        <parameter key="name">列表</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                        </parameter>
+                    </parameter>
                 </parameter>
             </parameter>
+            <parameter key="staff" type="collection">
+                <parameter key="name">客服管理</parameter>
+                <parameter key="actions" type="collection">
+                    <parameter key="view" type="collection">
+                        <parameter key="name">查看</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="edit" type="collection">
+                        <parameter key="name">编辑</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="list" type="collection">
+                        <parameter key="name">列表</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                </parameter>
+            </parameter>
+            <parameter key="client" type="collection">
+                <parameter key="name">车主管理</parameter>
+                <parameter key="actions" type="collection">
+                    <parameter key="view" type="collection">
+                        <parameter key="name">查看</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="edit" type="collection">
+                        <parameter key="name">编辑</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="list" type="collection">
+                        <parameter key="name">列表</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="bind_bike" type="collection">
+                        <parameter key="name">分配</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                </parameter>
+            </parameter>
+            <parameter key="agent" type="collection">
+                <parameter key="name">代理商管理</parameter>
+                <parameter key="actions" type="collection">
+                    <parameter key="view" type="collection">
+                        <parameter key="name">查看</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="edit" type="collection">
+                        <parameter key="name">编辑</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="list" type="collection">
+                        <parameter key="name">列表</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="bind_bike" type="collection">
+                        <parameter key="name">分配</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                </parameter>
+            </parameter>
+            <parameter key="bike" type="collection">
+                <parameter key="name">车辆管理</parameter>
+                <parameter key="actions" type="collection">
+                    <parameter key="view" type="collection">
+                        <parameter key="name">查看</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                            <parameter>ROLE_CLIENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="edit" type="collection">
+                        <parameter key="name">编辑</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="list" type="collection">
+                        <parameter key="name">列表</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                            <parameter>ROLE_CLIENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="bind_client" type="collection">
+                        <parameter key="name">分配车主</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="bind_agent" type="collection">
+                        <parameter key="name">分配代理商</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_CS_STAFF</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="daily_report" type="collection">
+                        <parameter key="name">日收益</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                            <parameter>ROLE_CLIENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="monthly_report" type="collection">
+                        <parameter key="name">月收益</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                            <parameter>ROLE_CLIENT</parameter>
+                        </parameter>
+                    </parameter>
+                    <parameter key="profit_export" type="collection">
+                        <parameter key="name">收益报表导出</parameter> 
+                        <parameter key="roles" type="collection">
+                            <parameter>ROLE_ADMIN</parameter>
+                            <parameter>ROLE_AGENT</parameter>
+                            <parameter>ROLE_CLIENT</parameter>
+                        </parameter>
+                    </parameter>
+                </parameter>
+            </parameter>
+
         </parameter>
     </parameters>
 </container>

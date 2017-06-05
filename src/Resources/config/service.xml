@@ -14,6 +14,7 @@
         <parameter key="bike.partner.service.user.class">Bike\Partner\Service\UserService</parameter>
         <parameter key="bike.partner.service.bike_revenue.class">Bike\Partner\Service\BikeRevenueService</parameter>
         <parameter key="bike.partner.service.excel_handler.class">Bike\Partner\Service\ExcelHandlerService</parameter>
+        <parameter key="bike.partner.service.security.class">Bike\Partner\Service\SecurityService</parameter>
     </parameters>
 
     <services>
@@ -66,6 +67,12 @@
         </service>
 
         <service id="bike.partner.service.excel_handler" class="%bike.partner.service.excel_handler.class%">
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="bike.partner.service.security" class="%bike.partner.service.security.class%">
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>

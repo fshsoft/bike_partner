@@ -22,9 +22,9 @@ class UserProvider implements UserProviderInterface
             $user->fromArray($passport->toArray());
 
             //privilege
-            // $securityService = $this->container->get('bike.partner.service.security');
-            // $privileges = $securityService->getPrivilegeMapByAdminPassportId($user->getId());
-            // $user->setPrivileges($privileges);
+            $securityService = $this->container->get('bike.partner.service.security');
+            $privileges = $securityService->getPrivilegeMapByPassportId($user->getId());
+            $user->setPrivileges($privileges);
 
             return $user;
         }

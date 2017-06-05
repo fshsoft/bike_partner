@@ -60,8 +60,9 @@
                   <td>{{ map.passport[v.getId()].getUsername() }}</td>
                   <td>{{ v.getName() }}</td>
                   <td>
+{% if role == 'ROLE_ADMIN' %}
                     <a href="{{ path('cs_staff_edit',{'id':v.getId() }) }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-edit"></i>编辑</a>
-                      
+{% endif %}                      
                   </td>
                 </tr>
 {% endfor %}

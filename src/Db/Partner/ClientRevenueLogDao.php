@@ -40,11 +40,19 @@ class ClientRevenueLogDao extends AbstractDao
 
     protected function applyOrder(QueryBuilder $qb, array $order)
     {
-
+        if (!empty($order)) {
+            foreach ($order as $key => $value) {
+                $qb->addOrderBy($key,$value);
+            }
+        }
     }
 
     protected function applyGroup(QueryBuilder $qb, array $group)
     {
-
+        if (!empty($group)) {
+            foreach ($group as $each) {
+                $qb->addGroupBy($each);
+            }
+        }
     }
 }

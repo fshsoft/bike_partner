@@ -36,6 +36,8 @@ class BikePartnerExtension extends Extension implements PrependExtensionInterfac
         $loader->load('twig.xml');
         $loader->load('security.xml');
 
+        $loader->load('privilege.xml');
+
         // compile class
         $this->addClassesToCompile(array(
 
