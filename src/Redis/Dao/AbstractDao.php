@@ -10,7 +10,7 @@ abstract class AbstractDao
 
     public function delete($key)
     {
-        $key = $this->getKey();
+        $key = $this->getKey($key);
         return $this->conn->del($key);
     }
 
