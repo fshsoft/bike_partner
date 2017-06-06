@@ -145,9 +145,14 @@ class AdminService extends AbstractService
         );
     }
 
-    public function getAllAdminPrivilegeListByPassportId($id)
+    public function getAllPrivilegeListByPassportId($id)
     {
-
+        $adminPrivilegeDao = $this->container->get('bike.partner.dao.partner.admin_privilege');
+        $where = ['admin_id'=>$id];
+        $result = $adminPrivilegeDao->findList('*',$where,0,0);
+        if ($result) {
+            return $result;
+        }
     }
 
 

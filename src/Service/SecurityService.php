@@ -11,9 +11,11 @@ use Bike\Partner\Db\Partner\Passport;
 
 class SecurityService extends AbstractService
 {
-
-	//User 类
 	protected $roleCodeMap = array(
+        Passport::TYPE_ADMIN => 'ROLE_ADMIN',
+        Passport::TYPE_CS_STAFF => 'ROLE_CS_STAFF',
+        Passport::TYPE_AGENT => 'ROLE_AGENT',
+        Passport::TYPE_CLIENT => 'ROLE_CLIENT',
     );
 
     protected $roleNameMap = array(
@@ -76,13 +78,13 @@ class SecurityService extends AbstractService
             return;
         }
 
-        $privileges = $this->getPrivilegeMapByRole($passport->getRole());
+        $privileges = $this->getPrivilegeMapByRole($passport->getType());
         if (!$privileges) {
             return;
         }
 
         $adminService = $this->container->get('bike.partner.service.admin');
-        $adminPrivilegeList = $adminService->getAllAdminPrivilegeListByPassportId($passportId);
+        $adminPrivilegeList = $adminService->getAllPrivilegeListByPassportId($passportId);
         if (!$adminPrivilegeList) {
             return;
         }
