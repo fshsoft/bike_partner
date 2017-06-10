@@ -33,16 +33,21 @@ class AgentVoter extends AbstractVoter
         $user = $token->getUser();
         $role = $user->getRole();
         if ($role == 'ROLE_ADMIN') {
-            return true;
+            if ($this->userHasPrivilege($user, $this->subject, $attribute)) {
+                return true;
+            }
+            return false;
         } elseif ($role == 'ROLE_AGENT') {
             if ($subject instanceof Agent) {
-                if (in_array($user->getId(), array($subject->getId(), $subject->getParentId()))) {
+                if ($user->getId() == $subject->getParentId()) {
                     return true;
                 }
             } else {
                 return true;
             }
-        }
+        } elseif ($role == 'ROLE_CS_STAFF') {
+            return true;
+        }   
         return false;
     }
 }

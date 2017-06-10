@@ -201,6 +201,26 @@ class CsStaffService extends AbstractService
         return array();
     }
 
+    public function getChildStaff($id)
+    {
+        $staff = $this->getCsStaff($id);
+        $level = $staff->getLevel();
+        if ($level == CsStaff::LEVEL_THREE) {
+            return array();
+        }
+        $csStaffDao = $this->getCsStaffDao();
+        $where = ['parent_id'=>$id];
+        $staffs = $csStaffDao->findList('id',$where,0,0);
+        if ($staffs) {
+            $result = array();
+            foreach ($staffs as $each) {
+                array_push($result, $each->getId());
+            }
+            return $result;
+        }
+        return array();
+    }
+
     public function getParentStaffIdAndNameMap($level,$id = null)
     {
         if ($level == CsStaff::LEVEL_ONE) {

@@ -9,6 +9,9 @@ use Bike\Partner\Db\Partner\Passport;
 class User extends Passport implements UserInterface
 {
     protected $privileges;
+
+    protected $childs;
+    protected $level;
     
     protected $roleMap = array(
         Passport::TYPE_ADMIN => 'ROLE_ADMIN',
@@ -68,6 +71,25 @@ class User extends Passport implements UserInterface
     public function getPrivileges()
     {
         return $this->privileges;
+    }
+
+    public function setChilds(array $childIdArray)
+    {
+        $this->childs = $childIdArray;
+    }
+
+    public function getChilds()
+    {
+        return $this->childs;
+    }
+
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
+    public function getLevel()
+    {
+        return $this->level;
     }
 
 

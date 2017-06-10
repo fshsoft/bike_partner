@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Bike\Partner\Db\Partner\Passport;
 
 class UserProvider implements UserProviderInterface
 {
@@ -20,12 +21,31 @@ class UserProvider implements UserProviderInterface
         if ($passport) {
             $user = new User();
             $user->fromArray($passport->toArray());
-
-            //privilege
-            $securityService = $this->container->get('bike.partner.service.security');
-            $privileges = $securityService->getPrivilegeMapByPassportId($user->getId());
-            $user->setPrivileges($privileges);
-
+            switch ($passport->getType()) {
+                case Passport::TYPE_ADMIN:
+                    $securityService = $this->container->get('bike.partner.service.security');
+                    $privileges = $securityService->getPrivilegeMapByPassportId($user->getId());
+                    $user->setPrivileges($privileges);
+                    break;
+                case Passport::TYPE_CS_STAFF:
+                    $csStaffService = $this->container->get('bike.partner.service.cs_staff');
+                    $csStaff = $csStaffService->getCsStaff($passport->getId());
+                    $user->setLevel($csStaff->getLevel());
+                    $childs = $csStaffService->getChildStaff($passport->getId());
+                    $user->setChilds($childs);
+                    break;
+                case Passport::TYPE_AGENT:
+                    $agentService = $this->container->get('bike.partner.service.agent');
+                    $agent = $agentService->getAgent($passport->getId());
+                    $user->setLevel($agent->getLevel());
+                    $user->setChilds($agentService->getChildAgent($passport->getId()));
+                    break;
+                case Passport::TYPE_CLIENT:
+                    break;
+                default:
+                    throw new AccessDeniedException("没有权限");
+                    break;
+            }
             return $user;
         }
 

@@ -186,6 +186,7 @@ class AgentService extends AbstractService
         return $agent;
     }
 
+
     public function getChildsAgentIdArray($agentId)
     {
         $agent = $this->getAgent($agentId);
@@ -226,6 +227,26 @@ class AgentService extends AbstractService
             return $idArray;
         }
 
+    }
+
+    public function getChildAgent($id)
+    {
+        $agent = $this->getAgent($id);
+        $level = $agent->getLevel();
+        if ($level == Agent::LEVEL_THREE) {
+            return array();
+        }
+        $agentDao = $this->getAgentDao();
+        $where = ['parent_id'=>$id];
+        $agents = $agentDao->findList('id',$where,0,0);
+        if ($agents) {
+            $result = array();
+            foreach ($agents as $each) {
+                array_push($result, $each->getId());
+            }
+            return $result;
+        }
+        return array();
     }
 
 

@@ -83,6 +83,10 @@ class SecurityService extends AbstractService
             return;
         }
 
+        if (Passport::TYPE_ADMIN != $passport->getType()) {
+            return $privileges;
+        }
+
         $adminService = $this->container->get('bike.partner.service.admin');
         $adminPrivilegeList = $adminService->getAllPrivilegeListByPassportId($passportId);
         if (!$adminPrivilegeList) {
