@@ -24,7 +24,7 @@ class IndexController extends AbstractController
     public function indexAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
-        // $this->denyAccessUnlessGranted('view', 'agent');
+        $this->denyAccessUnlessGranted('view','agent');
 
         $agentService = $this->get('bike.partner.service.agent');
         $page = $request->query->get('p');
@@ -46,6 +46,7 @@ class IndexController extends AbstractController
     public function newAction(Request $request)
     {
         $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
+        $this->denyAccessUnlessGranted('edit','agent');
         $agentService = $this->get('bike.partner.service.agent');
         if ($request->isMethod('post')) {
             $data = $request->request->all();
@@ -71,6 +72,8 @@ class IndexController extends AbstractController
     {
         $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
         $agentService = $this->get('bike.partner.service.agent');
+        $agent = $agentService->getAgent($id);
+        $this->denyAccessUnlessGranted('edit',$agent);
         if ($request->isMethod('post')) {
             $data = $request->request->all();
             try {
@@ -80,7 +83,7 @@ class IndexController extends AbstractController
                 return $this->jsonError($e);
             }
         } else {
-            $agent = $agentService->getAgent($id);
+            
             $passportService = $this->container->get('bike.partner.service.passport');
             $passport = $passportService->getPassport($id);
             return ['agent'=>$agent,'passport'=>$passport];
@@ -93,7 +96,7 @@ class IndexController extends AbstractController
      */
     public function parentAgeantAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CS_STAFF'), 'role');
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN','ROLE_CS_STAFF'), 'role');
         try {
             $level = $request->get('level');
             $id = $request->get('id',null);

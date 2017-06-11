@@ -23,7 +23,7 @@ class IndexController extends AbstractController
     public function exportAction(Request $request,$type)
     {
     	$this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'), 'role');
-
+        $this->denyAccessUnlessGranted('export', 'revenue');
     	try {
     		$excelHandlerService = $this->get('bike.partner.service.excel_handler');
 

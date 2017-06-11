@@ -16,6 +16,7 @@ class CsStaff extends AbstractEntity
         'id' => null,
         'name' => null,
         'parent_id' => null,
+        'parent_ids' => null,
         'level' => null,
     );
 }

@@ -18,7 +18,7 @@ class AdminVoter extends AbstractVoter
 
     protected function supports($attribute, $subject)
     {
-        if ($subject == $this->subject || $subject instanceof Agent) {
+        if ($subject == $this->subject || $subject instanceof Admin) {
             return true;
         }
 

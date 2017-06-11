@@ -42,10 +42,16 @@ class CsStaffService extends AbstractService
         }
         $this->validateParentId($data['parent_id']);
         if ($data['parent_id'] == 0) {
-            $data['level'] = 1;
+            $data['level'] = CsStaff::LEVEL_ONE;
         } else {
             $csStaff = $this->getCsStaff($data['parent_id']);
             $data['level'] = $csStaff->getLevel() + 1;
+
+            if ($data['level'] == CsStaff::LEVEL_TWO) {
+                $data['parent_ids'] = ',' . $csStaff->getId() . ','; 
+            } else {
+                $data['parent_ids'] = ',' . $csStaff->getParentId() . ',' . $csStaff->getId() . ',';
+            }
         }
 
         $csStaffDao = $this->getCsStaffDao();
@@ -91,9 +97,16 @@ class CsStaffService extends AbstractService
         $this->validateParentId($data['parent_id']);
         if ($data['parent_id'] == 0) {
             $data['level'] = 1;
+            $data['parent_ids'] = '';
         } else {
             $csStaff = $this->getCsStaff($data['parent_id']);
             $data['level'] = $csStaff->getLevel() + 1;
+
+            if ($data['level'] == CsStaff::LEVEL_TWO) {
+                $data['parent_ids'] = ',' . $csStaff->getId() . ','; 
+            } else {
+                $data['parent_ids'] = ',' . $csStaff->getParentId() . ',' . $csStaff->getId() . ',';
+            }
         }
 
         $csStaffDao = $this->getCsStaffDao();

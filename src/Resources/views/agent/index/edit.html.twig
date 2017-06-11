@@ -27,62 +27,37 @@
             <!-- /.box-header -->
             <!-- form start -->
             <form role="form" id="new-agent-form">
-<div class="row">
-    <div class="col-md-6 col-sm-12 col-xs-12">
-              <div class="box-body">
-                <div class="callout callout-danger" style="display:none">
-                  <h4>保存失败</h4>
-                  <p></p>
-                </div>
-                <div class="form-group">
-                  <label for="name">姓名</label>
-                  <input type="text" class="form-control" value="{{ agent.getName() }}" id="name" name="name" placeholder="" required="required">
-                </div>
-                <div class="form-group">
-                  <label for="username">用户名</label>
-                  <input type="text" class="form-control" value="{{ passport.getUsername() }}" id="username" name="username" placeholder="" required="required">
-                </div>
-                <div class="form-group">
-                  <label for="pwd">密码</label>
-                  <input type="password" class="form-control" id="pwd" name="pwd" placeholder="不修改请留白">
-                </div>
-                <div class="form-group">
-                  <label for="repwd">确认密码</label>
-                  <input type="password" class="form-control" id="repwd" name="repwd" placeholder="不修改请留白">
-                </div>
+              <div class="row">
+                  <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="box-body">
+                              <div class="callout callout-danger" style="display:none">
+                                <h4>保存失败</h4>
+                                <p></p>
+                              </div>
+                              <div class="form-group">
+                                <label for="name">姓名</label>
+                                <input type="text" class="form-control" value="{{ agent.getName() }}" id="name" name="name" placeholder="" required="required">
+                              </div>
+                              <div class="form-group">
+                                <label for="username">用户名</label>
+                                <input type="text" class="form-control" value="{{ passport.getUsername() }}" id="username" name="username" placeholder="" required="required">
+                              </div>
+                              <div class="form-group">
+                                <label for="pwd">密码</label>
+                                <input type="password" class="form-control" id="pwd" name="pwd" placeholder="不修改请留白">
+                              </div>
+                              <div class="form-group">
+                                <label for="repwd">确认密码</label>
+                                <input type="password" class="form-control" id="repwd" name="repwd" placeholder="不修改请留白">
+                              </div>
 
-{% set role = app.user.getRole() %}
-{% if role == 'ROLE_ADMIN' %}
-                <div class="form-group">
-                  <label for="level">等级</label>
-                  <select name="level" id="level" class="form-control select2" style="width: 100%;" >
-                      <option value="0">选择等级</option>
-{% set levelMap = bike_parter_agent_levelmap() %}
-{% for key,name in levelMap %}
-                      <option {% if key == agent.getLevel() %}selected="selected"{% endif %} value="{{ key }}">{{ name }}</option>
-{% endfor %}
-                  </select>
-                </div>
+                              <input type="hidden" name="level" value="{{ agent.getLevel() }}">
+                              <input type="hidden" name="parent_id" value="{{ agent.getParentId() }}">
 
-                <div class="form-group" style="display:none;">
-                  <label for="parent_id">上级代理商</label>
-                  <select name="parent_id" id="parent_id" class="form-control select2" style="width: 100%;" >
-                      <option value="0">选择上级代理商</option>
-                      {# <option value="1">一级</option> #}
-                      
-                  </select>
-                </div>
-{% elseif role == 'ROLE_AGENT' %}
-                <input type="hidden" name="level" value="{{ agent.getLevel() }}">
-                <input type="hidden" name="parent_id" value="{{ agent.getParentId() }}">
-{% endif %}
-
-
-
+                            </div>
+                            <!-- /.box-body -->
+                  </div>
               </div>
-              <!-- /.box-body -->
-    </div>
-</div>
 
               <div class="box-footer">
                 <button type="submit" class="btn btn-primary">保存</button>

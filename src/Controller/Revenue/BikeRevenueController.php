@@ -24,7 +24,7 @@ class BikeRevenueController extends AbstractController
 	public function indexAction(Request $request)
 	{
 		$this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'), 'role');
-
+        $this->denyAccessUnlessGranted('view', 'revenue');
         $revenueService = $this->get('bike.partner.service.bike_revenue');
         $page = $request->query->get('p');
         $pageNum = 10;
@@ -46,7 +46,7 @@ class BikeRevenueController extends AbstractController
 	public function dailyAction(Request $request)
 	{
 		$this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'), 'role');
-
+        $this->denyAccessUnlessGranted('view', 'revenue');
         $revenueService = $this->get('bike.partner.service.bike_revenue');
         $page = $request->query->get('p');
         $pageNum = 10;
@@ -68,7 +68,7 @@ class BikeRevenueController extends AbstractController
 	public function monthlyAction(Request $request)
 	{
 		$this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'), 'role');
-
+        $this->denyAccessUnlessGranted('view', 'revenue');
         $revenueService = $this->get('bike.partner.service.bike_revenue');
         $page = $request->query->get('p');
         $pageNum = 10;

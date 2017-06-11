@@ -30,8 +30,48 @@
             <tag name="security.voter" />
         </service>
 
+         <service id="bike.partner.security.voter.admin"
+            class="Bike\Partner\Security\Voter\AdminVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
+
         <service id="bike.partner.security.voter.agent"
             class="Bike\Partner\Security\Voter\AgentVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
+
+        <service id="bike.partner.security.voter.bike"
+            class="Bike\Partner\Security\Voter\BikeVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
+
+        <service id="bike.partner.security.voter.client"
+            class="Bike\Partner\Security\Voter\ClientVoter"
+            public="false"
+            >
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <tag name="security.voter" />
+        </service>
+
+        <service id="bike.partner.security.voter.revenue"
+            class="Bike\Partner\Security\Voter\RevenueVoter"
             public="false"
             >
             <call method="setContainer">
@@ -49,5 +89,6 @@
             </call>
             <tag name="security.voter" />
         </service>
+        
     </services>
 </container>

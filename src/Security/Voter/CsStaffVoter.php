@@ -33,10 +33,13 @@ class CsStaffVoter extends AbstractVoter
         $user = $token->getUser();
         $role = $user->getRole();
         if ($role == 'ROLE_ADMIN') {
+            if (!$this->userHasPrivilege($user, $this->subject, $attribute)) {
+                // return false;
+            }
             return true;
         } elseif ($role == 'ROLE_CS_STAFF') {
             if ($subject instanceof CsStaff) {
-                if (in_array($user->getId(), array($subject->getId(), $subject->getParentId()))) {
+                if ($user->getId() == $subject->getParentId()) {
                     return true;
                 }
             } else {

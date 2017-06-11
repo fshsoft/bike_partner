@@ -6,22 +6,25 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 use Bike\Partner\Db\Partner\Agent;
+use Bike\Partner\Db\Partner\Bike;
 
-class AgentVoter extends AbstractVoter
+
+class BikeVoter extends AbstractVoter
 {
     protected $subject = 'bike';
 
     protected $actions = array(
         'view',
         'edit',
+        'bind',
+        'bind_agent',
     );
 
     protected function supports($attribute, $subject)
     {
-        if ($subject == $this->subject || $subject instanceof Agent) {
+        if ($subject == $this->subject || $subject instanceof Bike) {
             return true;
         }
-
         return false;
     }
 
@@ -34,12 +37,15 @@ class AgentVoter extends AbstractVoter
         $role = $user->getRole();
         if ($role == 'ROLE_ADMIN') {
             if (!$this->userHasPrivilege($user, $this->subject, $attribute)) {
-                return false;
+
             }
             return true;
         } elseif ($role == 'ROLE_AGENT') {            
             if ($subject instanceof Bike) {
-                if ($subject->getAgentId() == $user->getId() || in_array($subject->getAgentId(), $user->getChilds()) {
+                if ($user->getLevel() == Agent::LEVEL_THREE) {
+                    return false;
+                }
+                if ($subject->getAgentId() == $user->getId() || in_array($subject->getAgentId(), $user->getChilds())) {
                     return true;
                 }
                 return false;
@@ -48,7 +54,9 @@ class AgentVoter extends AbstractVoter
             }
         } elseif ($role == 'ROLE_CS_STAFF') {
             return true;
-        }  
+        } elseif ($role == 'ROLE_CLIENT') {
+            return true;
+        } 
         return false;
     }
 }

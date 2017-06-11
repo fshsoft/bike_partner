@@ -5,20 +5,20 @@ namespace Bike\Partner\Security\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-use Bike\Partner\Db\Partner\Client;
+use Bike\Partner\Db\Partner\Agent;
 
-class ClientVoter extends AbstractVoter
+class RevenueVoter extends AbstractVoter
 {
-    protected $subject = 'client';
+    protected $subject = 'revenue';
 
     protected $actions = array(
         'view',
-        'edit',
+        'export',
     );
 
     protected function supports($attribute, $subject)
     {
-        if ($subject == $this->subject || $subject instanceof Client) {
+        if ($subject == $this->subject) {
             return true;
         }
 
@@ -34,12 +34,13 @@ class ClientVoter extends AbstractVoter
         $role = $user->getRole();
         if ($role == 'ROLE_ADMIN') {
             if (!$this->userHasPrivilege($user, $this->subject, $attribute)) {
-                // return false;
             }
             return true;
-        } else if ($role == 'ROLE_CS_STAFF') {
+        } elseif ($role == 'ROLE_AGENT') {
             return true;
-        }
+        } elseif ($role == 'ROLE_CLIENT') {
+            return true;
+        }   
         return false;
     }
 }

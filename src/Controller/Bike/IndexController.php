@@ -29,13 +29,10 @@ class IndexController extends AbstractController
             'ROLE_CS_STAFF',
             'ROLE_AGENT',
         ), 'role');
-        $bikeService = $this->get('bike.partner.service.bike');
-        $page = $request->query->get('p');
-        $pageNum = 10;
-
-        $args = $request->query->all();
+        $this->denyAccessUnlessGranted('view','bike');
         $user = $this->getUser();
         $role = $user->getRole();
+        $args = $request->query->all();
         if ($role == 'ROLE_AGENT') {
             //所有的下级
             $agentService = $this->get('bike.partner.service.agent');
@@ -46,6 +43,10 @@ class IndexController extends AbstractController
             $args['client_id'] = $user->getId();
         }
 
+        $bikeService = $this->get('bike.partner.service.bike');
+        $page = $request->query->get('p');
+        $pageNum = 10;        
+
         return $bikeService->searchBike($args, $page, $pageNum);
     }
 
@@ -55,7 +56,8 @@ class IndexController extends AbstractController
      */
     public function newAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF'], 'role');
+        $this->denyAccessUnlessGranted(['ROLE_ADMIN'], 'role');
+        $this->denyAccessUnlessGranted('edit', 'bike');
         if ($request->isMethod('post')) {
             try {
                 $bikeService = $this->get('bike.partner.service.bike');
@@ -80,6 +82,8 @@ class IndexController extends AbstractController
                 $clientId = $request->get('clientId',0);
                 $username = $request->get('username','');
                 $bikeService = $this->get('bike.partner.service.bike');
+                $bike = $bikeService->getBikeById($id);
+                $this->denyAccessUnlessGranted('bind',$bike);
                 $bikeService->bindBike($id,$clientId,$username);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
@@ -99,6 +103,8 @@ class IndexController extends AbstractController
             try {
                 $id = $request->get('id');
                 $bikeService = $this->get('bike.partner.service.bike');
+                $bike = $bikeService->getBikeById($id);
+                $this->denyAccessUnlessGranted('bind',$bike);
                 $bikeService->unbindBike($id);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
@@ -115,14 +121,15 @@ class IndexController extends AbstractController
     {
         $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF','ROLE_AGENT'], 'role');
 
-        //代理商三级没有权限voter
-
         if ($request->isMethod('post')) {
             try {
                 $id = $request->get('id','');
                 $AgentId = $request->get('agentId',0);
                 $username = $request->get('username','');
                 $bikeService = $this->get('bike.partner.service.bike');
+                $bike = $bikeService->getBikeById($id);
+                $this->denyAccessUnlessGranted('bind_agent',$bike);
+
                 $bikeService->bindBikeAgent($id,$AgentId,$username);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
@@ -139,12 +146,12 @@ class IndexController extends AbstractController
     {
         $this->denyAccessUnlessGranted(['ROLE_ADMIN', 'ROLE_CS_STAFF','ROLE_AGENT'], 'role');
 
-        //代理商三级没有权限voter
-
         if ($request->isMethod('post')) {
             try {
                 $id = $request->get('id');
                 $bikeService = $this->get('bike.partner.service.bike');
+                $bike = $bikeService->getBikeById($id);
+                $this->denyAccessUnlessGranted('bind_agent',$bike);
                 $bikeService->unbindBikeAgent($id);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {

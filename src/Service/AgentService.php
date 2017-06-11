@@ -47,6 +47,12 @@ class AgentService extends AbstractService
         } else {
             $agent = $this->getAgent($data['parent_id']);
             $data['level'] = $agent->getLevel() + 1;
+
+            if ($data['level'] == Agent::LEVEL_TWO) {
+                $data['parent_ids'] = ',' . $agent->getId() . ','; 
+            } else {
+                $data['parent_ids'] = ',' . $agent->getParentId() . ',' . $agent->getId() . ',';
+            }
         }
 
         $agentDao = $this->getAgentDao();
@@ -92,9 +98,16 @@ class AgentService extends AbstractService
         $this->validateParentId($data['parent_id']);
         if ($data['parent_id'] == 0) {
             $data['level'] = 1;
+            $data['parent_ids'] = '';
         } else {
             $agent = $this->getAgent($data['parent_id']);
             $data['level'] = $agent->getLevel() + 1;
+
+            if ($data['level'] == Agent::LEVEL_TWO) {
+                $data['parent_ids'] = ',' . $agent->getId() . ','; 
+            } else {
+                $data['parent_ids'] = ',' . $agent->getParentId() . ',' . $agent->getId() . ',';
+            }
         }
 
         $agentDao = $this->getAgentDao();
@@ -196,6 +209,7 @@ class AgentService extends AbstractService
         $idArray = [];
         $level = $agent->getLevel();
         $agentDao = $this->getAgentDao();
+
         if ($level == Agent::LEVEL_THREE) {
             return $idArray;
         }
@@ -210,18 +224,11 @@ class AgentService extends AbstractService
             return $idArray;
         }
         if ($level == Agent::LEVEL_ONE) {
-            $where = ['parent_id'=>$agentId];
+            $where = ['parent_ids.like'=>'%,' . $agentId . ',%'];
             $list2 = $agentDao->findList('id',$where,0,0);
             if ($list2) {
                 foreach ($list2 as $each) {
                     array_push($idArray, $each->getId());
-                }
-                $where = ['parent_id.in'=>$idArray];
-                $list3 = $agentDao->findList('id',$where,0,0);
-                if ($list3) {
-                    foreach ($list3 as $each3) {
-                        array_push($idArray, $each3->getId());
-                    }
                 }
             }
             return $idArray;

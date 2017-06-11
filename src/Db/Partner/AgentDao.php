@@ -25,6 +25,7 @@ class AgentDao extends AbstractDao
             'id.in',
             'id.not',
             'parent_id.in',
+            'parent_ids.like'
         ));
         if ($where['parent_id']) {
             $qb->andWhere('parent_id = ' . $qb->createNamedParameter($where['parent_id']));
@@ -41,6 +42,10 @@ class AgentDao extends AbstractDao
         if ($where['parent_id.in']) {
             $qb->andWhere('parent_id IN (' . $qb->createNamedParameter($where['parent_id.in'], Connection::PARAM_INT_ARRAY) . ')');
         }
+        if ($where['parent_ids.like']) {
+            $qb->andWhere("parent_ids like " . $qb->createNamedParameter($where['parent_ids.like']));
+        }
+
     }
 
     protected function applyOrder(QueryBuilder $qb, array $order)
