@@ -16,30 +16,46 @@ class ClientService extends AbstractService
         $data = ArgUtil::getArgs($data, array(
             'name',
             'username',
+            'bike',
             'pwd',
             'repwd',
         ));
         $data['type'] = Passport::TYPE_CLIENT;
 
         $this->validateName($data['name']);
+        $this->validateBikeId($data['bike']);
+
+        $bikeId = $data['bike'];
+        unset($data['bike']);
         $clientDao = $this->getClientDao();
         $clientConn = $clientDao->getConn();
+
         $passportService = $this->container->get('bike.partner.service.passport');
         $passportDao = $this->container->get('bike.partner.dao.partner.passport');
         $passportConn = $passportDao->getConn();
+
+        $bikeDao = $this->container->get('bike.partner.dao.partner.bike');
+        $bikeConn = $bikeDao->getConn();
+
         $clientConn->beginTransaction();
         $passportConn->beginTransaction();
+        $bikeConn->beginTransaction();
         try {
             $passportId = $passportService->createPassport($data);
             $client = new Client($data);
             $client->setId($passportId);
             $clientDao->create($client);
 
+            $dataBike = ['client_id'=>$passportId];
+            $bikeDao->update($bikeId,$dataBike);
+
             $passportConn->commit();
             $clientConn->commit();
+            $bikeConn->commit();
         } catch (\Exception $e) {
             $passportConn->rollBack();
             $clientConn->rollBack();
+            $bikeConn->rollBack();
             throw $e;
         }
     }
@@ -152,6 +168,22 @@ class ClientService extends AbstractService
         if ($len > 20) {
             throw new LogicException('委托人名称不能多于20个字符');
         }
+    }
+
+    protected function validateBikeId($id)
+    {
+        if (!$id) {
+            throw new LogicException("车辆编号不能为空");
+        }
+        $bikeService = $this->container->get('bike.partner.service.bike');
+        $bike = $bikeService->getBikeById($id);
+        if (!$bike) {
+            throw new LogicException("未找到车辆");
+        }
+        if ($bike->getClientId()) {
+            throw new LogicException("车辆已被分配");
+        }
+
     }
 
     protected function getClientDao()

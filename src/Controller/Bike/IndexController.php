@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 
 use Bike\Partner\Controller\AbstractController;
+use Bike\Partner\Exception\Logic\LogicException;
 /**
  * @Route("/bike")
  */
@@ -83,7 +84,11 @@ class IndexController extends AbstractController
                 $username = $request->get('username','');
                 $bikeService = $this->get('bike.partner.service.bike');
                 $bike = $bikeService->getBikeById($id);
-                $this->denyAccessUnlessGranted('bind',$bike);
+                if ($bike) {
+                    $this->denyAccessUnlessGranted('bind',$bike);    
+                } else {
+                    throw new LogicException("未找到车辆");
+                }
                 $bikeService->bindBike($id,$clientId,$username);
                 return $this->jsonSuccess();
             } catch (\Exception $e) {
@@ -128,7 +133,11 @@ class IndexController extends AbstractController
                 $username = $request->get('username','');
                 $bikeService = $this->get('bike.partner.service.bike');
                 $bike = $bikeService->getBikeById($id);
-                $this->denyAccessUnlessGranted('bind_agent',$bike);
+                if ($bike) {
+                    $this->denyAccessUnlessGranted('bind_agent',$bike);    
+                } else {
+                    throw new LogicException("未找到车辆");
+                }
 
                 $bikeService->bindBikeAgent($id,$AgentId,$username);
                 return $this->jsonSuccess();

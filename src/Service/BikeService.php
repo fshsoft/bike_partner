@@ -10,6 +10,7 @@ use Bike\Partner\Db\Primary\Bike as PrimaryBike;
 use Bike\Partner\Db\Partner\Bike as PartnerBike;
 use Bike\Partner\Db\Primary\BikeIdGenrator;
 use Bike\Partner\Db\Partner\Passport;
+use Bike\Partner\Db\Partner\Agent;
 
 class BikeService extends AbstractService
 {
@@ -120,10 +121,15 @@ class BikeService extends AbstractService
 
             $bikeDao = $this->getPartnerBikeDao();
             
-            $bike = $bikeDao->find($id);
+            $bike = $this->getBikeById($id);
             if (!$bike) {
                 throw new LogicException("未找到车辆");
             }
+
+            if ($bike->getClientId() <= 0 ) {
+                throw new LogicException("请先分配车主");
+            }
+
             if ($role == 'ROLE_AGENT') {
                 if ($bike->getAgentId() != $user->getId()) {
                     throw new LogicException("车辆已被分配");    
@@ -149,12 +155,16 @@ class BikeService extends AbstractService
                 throw new LogicException("没有找到代理商");
             }
 
+            $agent = $agentService->getAgent($agent->getId());
             if ($role == 'ROLE_AGENT') {
-                $agent = $agentService->getAgent($agent->getId());
                 //判断是否是子代理商
                 if ($agent->getParentId() != $user->getId()) {
                     throw new LogicException("只能管理下级代理商");
                 }       
+            } else if ($role == 'ROLE_ADMIN' || $role == 'ROLE_CS_STAFF' ) {
+                if ($agent->getLevel() != Agent::LEVEL_ONE) {
+                    throw new LogicException("只能分配给一级代理商");
+                }
             }
 
             $data = ['agent_id'=>$agent->getId()];
