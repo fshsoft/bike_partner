@@ -32,8 +32,6 @@
           <ul class="treeview-menu">
             <li><a href="{{ path('agent') }}"><i class="fa fa-circle-o"></i> 代理商</a></li>
             <li><a href="{{ path('client') }}"><i class="fa fa-circle-o"></i> 车主</a></li>
-            <li><a href="{{ path('cs_staff') }}"><i class="fa fa-circle-o"></i> 客服</a></li>
-            <li><a href="{{ path('admin') }}"><i class="fa fa-circle-o"></i> 管理员</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -47,15 +45,16 @@
             <li><a href="{{ path('bike') }}"><i class="fa fa-circle-o"></i> 单车</a></li>
           </ul>
         </li>
-        {# <li class="treeview">
+        <li class="treeview">
           <a href="#">
-            <i class="fa fa-fw fa-cny"></i> <span>统计报表</span>
+            <i class="fa fa-windows"></i> <span>系统管理</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{ path('report')}}"><i class="fa fa-circle-o"></i> 单车收益</a></li>
-          </ul> #}
+            <li><a href="{{ path('cs_staff') }}"><i class="fa fa-circle-o"></i> 客服</a></li>
+            <li><a href="{{ path('admin') }}"><i class="fa fa-circle-o"></i> 管理员</a></li>
+          </ul>
         </li>
       </ul>

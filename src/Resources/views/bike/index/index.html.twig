@@ -103,7 +103,7 @@
           {% endif %}
 {% elseif role == 'ROLE_AGENT' %}
     {# 三级代理商没有权限 #}
-    {% if (app.user.getLevel() != 3 and v.getAgentId() in app.user.getChilds() )  %}
+    {% if (app.user.getLevel() != 3 and (v.getAgentId() in app.user.getChilds() or v.getAgentId() == userId) )  %}
           {% if v.getAgentId() != userId %}
                                 <a title="取消分配代理商" class="btn btn-xs  btn-primary"  data-toggle="modal" data-name="{{ v.getId() }}" data-target="#cancel-agent-modal" data-id="{{ v.getId() }}">取消分配代理商</a>
           {% elseif v.getClientId() > 0 %}
