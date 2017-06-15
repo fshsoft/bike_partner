@@ -16,7 +16,7 @@ class Agent extends AbstractEntity
         'id' => null,
         'name' => null,
         'parent_id' => null,
-        'parent_ids' => null,
+        'parent_ids' => '',
         'level' => null,
         'static_revenue' => 0,
         'dynamic_revenue' => 0,
