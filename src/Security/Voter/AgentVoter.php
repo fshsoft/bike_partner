@@ -43,6 +43,9 @@ class AgentVoter extends AbstractVoter
                     return true;
                 }
             } else {
+                if ($attribute == 'edit' && $user->getLevel() == Agent::LEVEL_THREE) {
+                    return false;
+                } 
                 return true;
             }
         } elseif ($role == 'ROLE_CS_STAFF') {

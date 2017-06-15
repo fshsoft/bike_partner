@@ -38,10 +38,17 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">列表</h3>
-
+{% set role = app.user.getRole() %}
+{% if role in ['ROLE_ADMIN','ROLE_CS_STAFF'] %}
               <div class="box-tools">
                 <a href="{{ path('agent_new') }}" class="btn btn-sm btn-block btn-primary">新增</a>
               </div>
+{% endif %}
+{% if role == 'ROLE_AGENT' and app.user.getLevel() != 3 %}
+              <div class="box-tools">
+                <a href="{{ path('agent_new') }}" class="btn btn-sm btn-block btn-primary">新增</a>
+              </div>
+{% endif %}
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
@@ -59,7 +66,7 @@
                   <td>{{ v.getName() }}</td>
                   <td>
                     <a href="{{ path('agent_edit',{'id':v.getId() }) }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-edit"></i>编辑</a>
-{% set role = app.user.getRole() %}
+
 {% if role in ['ROLE_ADMIN','ROLE_CS_STAFF'] %}
                     <a title="分配车辆" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ v.getId() }}" class="btn btn-xs  btn-primary"><i class="fa fa-fw fa-bicycle"></i>分配</a>
 {% endif %}
