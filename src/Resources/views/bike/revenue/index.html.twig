@@ -40,7 +40,13 @@
                           </tr>
           {% for v in list.log %}
                           <tr>
-                            <td>{{ v.getBikeId() }}</td>
+                            <td>
+{% if app.user.getRole() == 'ROLE_ADMIN' %}
+{{ v.getId() }}
+{% else %}
+{{ v.getBikeId() }}
+{% endif %}
+                            </td>
                             <td>{{ v.getRevenue() }}</td>
                             <td>
           {% if map.agent[v.getAgentId()] is defined %}
