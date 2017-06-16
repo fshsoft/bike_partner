@@ -73,7 +73,7 @@ class PassportExtension extends AbstractExtension
                 $clientService = $this->container->get('bike.partner.service.client');
                 $client = $clientService->getClient($id);
                 if ($client) {
-                    return '委托人';
+                    return '车主';
                 }
                 break;
             case Passport::TYPE_CS_STAFF:

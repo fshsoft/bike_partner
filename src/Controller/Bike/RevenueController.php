@@ -1,5 +1,5 @@
 <?php
-namespace Bike\Partner\Controller\Revenue;
+namespace Bike\Partner\Controller\Bike;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -13,13 +13,13 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Bike\Partner\Controller\AbstractController;
 
 /**
-* @Route("/bike_revenue")
+* @Route("/bike/revenue")
 */
-class BikeRevenueController extends AbstractController
+class RevenueController extends AbstractController
 {
 	/**
 	 * @Route("/",name="bike_revenue")
-	 * @Template("BikePartnerBundle:revenue/bike_revenue:index.html.twig")
+	 * @Template("BikePartnerBundle:bike/revenue:index.html.twig")
 	 */
 	public function indexAction(Request $request)
 	{
@@ -41,7 +41,7 @@ class BikeRevenueController extends AbstractController
 
 	/**
 	 * @Route("/daily",name="bike_revenue_daily")
-	 * @Template("BikePartnerBundle:revenue/bike_revenue:daily.html.twig")
+	 * @Template("BikePartnerBundle:bike/revenue:daily.html.twig")
 	 */
 	public function dailyAction(Request $request)
 	{
@@ -63,7 +63,7 @@ class BikeRevenueController extends AbstractController
 
 	/**
 	 * @Route("/monthly",name="bike_revenue_monthly")
-	 * @Template("BikePartnerBundle:revenue/bike_revenue:monthly.html.twig")
+	 * @Template("BikePartnerBundle:bike/revenue:monthly.html.twig")
 	 */
 	public function monthlyAction(Request $request)
 	{
@@ -82,6 +82,4 @@ class BikeRevenueController extends AbstractController
         }
         return $revenueService->getBikeMonthlyReport($args, $page, $pageNum);
 	}	
-
-	
 }
