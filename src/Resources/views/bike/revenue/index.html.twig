@@ -41,11 +41,7 @@
           {% for v in list.log %}
                           <tr>
                             <td>
-{% if app.user.getRole() == 'ROLE_ADMIN' %}
-{{ v.getId() }}
-{% else %}
 {{ v.getBikeId() }}
-{% endif %}
                             </td>
                             <td>{{ v.getRevenue() }}</td>
                             <td>
