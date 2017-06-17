@@ -36,7 +36,7 @@ class RevenueController extends AbstractController
         } else if ($role == 'ROLE_AGENT') {
         	$args['agent_id'] = $user->getId();
         }
-        return $revenueService->getBikeDailyLog($args, $page, $pageNum);
+        return $revenueService->searchBikeLog($args, $page, $pageNum);
 	}
 
 	/**
@@ -58,7 +58,7 @@ class RevenueController extends AbstractController
         } else if ($role == 'ROLE_AGENT') {
         	$args['agent_id'] = $user->getId();
         }
-        return $revenueService->searchBikeDailyLog($args, $page, $pageNum);
+        return $revenueService->searchBikeDailyReport($args, $page, $pageNum);
 	}
 
 	/**
@@ -80,7 +80,7 @@ class RevenueController extends AbstractController
         } else if ($role == 'ROLE_AGENT') {
         	$args['agent_id'] = $user->getId();
         }
-        return $revenueService->searchBikeMonthlyLog($args, $page, $pageNum);
+        return $revenueService->searchBikeMonthlyReport($args, $page, $pageNum);
 	}	
 
 

@@ -9,79 +9,9 @@ use Bike\Partner\Util\ArgUtil;
 class BikeRevenueService extends AbstractService
 {
 
-	public function searchBikeDailyLog(array $args, $page, $pageNum)
-	{
-		$page = intval($page);
-        $pageNum = intval($pageNum);
-        if ($page < 1) {
-            $page = 1;
-        }
-        if ($pageNum < 1) {
-            $pageNum = 1;
-        }
-        $offset = ($page - 1) * $pageNum;
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $role = $user->getRole();
-        switch ($role) {
-            case 'ROLE_ADMIN':
-                $dao = $this->container->get('bike.partner.dao.partner.bike_revenue_log');
-                $logList = $dao->findList('sum(revenue) as revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc'],['log_day']);
-                if ($logList) {
-                    $total = $dao->findNum($args,'log_day',['log_day']);
-                } else {
-                    $logList = array();
-                    $total = 0;
-                }
-                break;
-            case 'ROLE_AGENT':
-                $dao = $this->container->get('bike.partner.dao.partner.agent_revenue_log');
-                $logList = $dao->findList('revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc']);
-                if ($logList) {
-                    $total = $dao->findNum($args,'*');
-                } else {
-                    $logList = array();
-                    $total = 0;
-                }
-                break;
-            case 'ROLE_CLIENT':
-                $dao = $this->container->get('bike.partner.dao.partner.client_revenue_log');
-                $logList = $dao->findList('revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc']);
-                if ($logList) {
-                    $total = $dao->findNum($args,'*');
-                } else {
-                    $logList = array();
-                    $total = 0;
-                }
-                break;
-            default:
-                throw new LogicException("访问受限");
-                break;
-        }
-        
-        if ($total) {
-            $totalPage = ceil($total / $pageNum);
-            if ($page > $totalPage) {
-                $page = $totalPage;
-            }
-        } else {
-            $totalPage = 1;
-            $page = 1;
-        }
-
-        return array(
-            'page' => $page,
-            'totalPage' => $totalPage,
-            'pageNum' => $pageNum,
-            'total' => $total,
-            'list' => array(
-            	'log' => $logList,
-            ),
-        );
-	}
-
-	public function getBikeDailyLog(array $args, $page, $pageNum)
-	{
-		$page = intval($page);
+    public function searchBikeLog(array $args, $page, $pageNum)
+    {
+        $page = intval($page);
         $pageNum = intval($pageNum);
         if ($page < 1) {
             $page = 1;
@@ -127,7 +57,7 @@ class BikeRevenueService extends AbstractService
             'pageNum' => $pageNum,
             'total' => $total,
             'list' => array(
-            	'log' => $logList,
+                'log' => $logList,
             ),
             'map' => array(
                 'agent' => $agentMap,
@@ -135,9 +65,82 @@ class BikeRevenueService extends AbstractService
             ),
         );
 
+    }
+
+
+	public function searchBikeDailyReport(array $args, $page, $pageNum)
+	{
+		$page = intval($page);
+        $pageNum = intval($pageNum);
+        if ($page < 1) {
+            $page = 1;
+        }
+        if ($pageNum < 1) {
+            $pageNum = 1;
+        }
+        $offset = ($page - 1) * $pageNum;
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $role = $user->getRole();
+        switch ($role) {
+            case 'ROLE_ADMIN':
+                $dao = $this->container->get('bike.partner.dao.partner.bike_revenue_log');
+                $logList = $dao->findList('sum(revenue) as revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc'],['log_day']);
+                if ($logList) {
+                    $total = $dao->findNum($args,'log_day',['log_day']);
+                } else {
+                    $logList = array();
+                    $total = 0;
+                }
+                break;
+            case 'ROLE_AGENT':
+                $dao = $this->container->get('bike.partner.dao.partner.agent_revenue_log');
+                $logList = $dao->findList('revenue,log_day,bike_revenue,share_revenue', $args, $offset, $pageNum, ['log_day' => 'desc']);
+                if ($logList) {
+                    $total = $dao->findNum($args,'*');
+                } else {
+                    $logList = array();
+                    $total = 0;
+                }
+                break;
+            case 'ROLE_CLIENT':
+                $dao = $this->container->get('bike.partner.dao.partner.client_revenue_log');
+                $logList = $dao->findList('revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc']);
+                if ($logList) {
+                    $total = $dao->findNum($args,'*');
+                } else {
+                    $logList = array();
+                    $total = 0;
+                }
+                break;
+            default:
+                throw new LogicException("访问受限");
+                break;
+        }
+        
+        if ($total) {
+            $totalPage = ceil($total / $pageNum);
+            if ($page > $totalPage) {
+                $page = $totalPage;
+            }
+        } else {
+            $totalPage = 1;
+            $page = 1;
+        }
+
+        return array(
+            'page' => $page,
+            'totalPage' => $totalPage,
+            'pageNum' => $pageNum,
+            'total' => $total,
+            'list' => array(
+            	'log' => $logList,
+            ),
+        );
 	}
 
-	public function searchBikeMonthlyLog(array $args, $page, $pageNum)
+
+
+	public function searchBikeMonthlyReport(array $args, $page, $pageNum)
 	{
 		$page = intval($page);
         $pageNum = intval($pageNum);
