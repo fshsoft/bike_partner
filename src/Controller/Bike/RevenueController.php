@@ -58,7 +58,7 @@ class RevenueController extends AbstractController
         } else if ($role == 'ROLE_AGENT') {
         	$args['agent_id'] = $user->getId();
         }
-        return $revenueService->getBikeDailyReport($args, $page, $pageNum);
+        return $revenueService->searchBikeDailyLog($args, $page, $pageNum);
 	}
 
 	/**
@@ -80,6 +80,38 @@ class RevenueController extends AbstractController
         } else if ($role == 'ROLE_AGENT') {
         	$args['agent_id'] = $user->getId();
         }
-        return $revenueService->getBikeMonthlyReport($args, $page, $pageNum);
+        return $revenueService->searchBikeMonthlyLog($args, $page, $pageNum);
 	}	
+
+
+    /**
+     * @Route("/export/{type}", name="bike_revenue_export")
+     */
+    public function exportAction(Request $request,$type)
+    {
+        $this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'), 'role');
+        $this->denyAccessUnlessGranted('export', 'revenue');
+        try {
+
+            $revenueService = $this->get('bike.partner.service.bike_revenue');
+
+            $args = $request->query->all();
+
+            $user = $this->getUser();
+            $role = $user->getRole();
+            if ($role == 'ROLE_AGENT') {
+                $args['agent_id'] = $user->getId();
+            }
+            if ($role == 'ROLE_CLIENT') {
+                $args['client_id'] = $user->getId();
+            }
+            $response = $revenueService->export($type,$args);
+
+            return $response;
+        } catch (\Exception $e) {
+            return $this->jsonError($e);
+        }
+        return array();
+    }
+
 }

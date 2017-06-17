@@ -9,7 +9,7 @@ use Bike\Partner\Util\ArgUtil;
 class BikeRevenueService extends AbstractService
 {
 
-	public function getBikeDailyReport(array $args, $page, $pageNum)
+	public function searchBikeDailyLog(array $args, $page, $pageNum)
 	{
 		$page = intval($page);
         $pageNum = intval($pageNum);
@@ -20,13 +20,42 @@ class BikeRevenueService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeRevenueLogDao = $this->getRevenueLogByUserRole();
-        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc'],['log_day']);
-        if ($logList) {
-        	$total = $bikeRevenueLogDao->findNum($args,'log_day',['log_day']);
-        } else {
-            $logList = array();
-            $total = 0;
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $role = $user->getRole();
+        switch ($role) {
+            case 'ROLE_ADMIN':
+                $dao = $this->container->get('bike.partner.dao.partner.bike_revenue_log');
+                $logList = $dao->findList('sum(revenue) as revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc'],['log_day']);
+                if ($logList) {
+                    $total = $dao->findNum($args,'log_day',['log_day']);
+                } else {
+                    $logList = array();
+                    $total = 0;
+                }
+                break;
+            case 'ROLE_AGENT':
+                $dao = $this->container->get('bike.partner.dao.partner.agent_revenue_log');
+                $logList = $dao->findList('revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc']);
+                if ($logList) {
+                    $total = $dao->findNum($args,'*');
+                } else {
+                    $logList = array();
+                    $total = 0;
+                }
+                break;
+            case 'ROLE_CLIENT':
+                $dao = $this->container->get('bike.partner.dao.partner.client_revenue_log');
+                $logList = $dao->findList('revenue,log_day', $args, $offset, $pageNum, ['log_day' => 'desc']);
+                if ($logList) {
+                    $total = $dao->findNum($args,'*');
+                } else {
+                    $logList = array();
+                    $total = 0;
+                }
+                break;
+            default:
+                throw new LogicException("访问受限");
+                break;
         }
         
         if ($total) {
@@ -61,7 +90,7 @@ class BikeRevenueService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeRevenueLogDao = $this->getRevenueLogByUserRole();
+        $bikeRevenueLogDao = $this->getBikeRevenueLogDao();
         $logList = $bikeRevenueLogDao->findList('*', $args, $offset, $pageNum, ['id' => 'desc']);
         if ($logList) {
             $agentIds = array();
@@ -108,7 +137,7 @@ class BikeRevenueService extends AbstractService
 
 	}
 
-	public function getBikeMonthlyReport(array $args, $page, $pageNum)
+	public function searchBikeMonthlyLog(array $args, $page, $pageNum)
 	{
 		$page = intval($page);
         $pageNum = intval($pageNum);
@@ -119,7 +148,8 @@ class BikeRevenueService extends AbstractService
             $pageNum = 1;
         }
         $offset = ($page - 1) * $pageNum;
-        $bikeRevenueLogDao = $this->getRevenueLogByUserRole();
+        $bikeRevenueLogDao = $this->getRevenueLogDaoByUserRole();
+
         $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_month', $args, $offset, $pageNum, ['log_month' => 'desc'],['log_month']);
         if ($logList) {
         	$total = $bikeRevenueLogDao->findNum($args,'log_month',['log_month']);
@@ -149,13 +179,74 @@ class BikeRevenueService extends AbstractService
         );	
 	}
 
+    public function export($type,$args)
+    {
+        $data = [];
+        switch ($type) {
+            case 'month_profit':
+                $data = $this->getMonthProfitData($args);
+                $fileName = 'month_profit';
+                break;
+            case 'daily_profit':
+                $data = $this->getDailyProfitData($args);
+                $fileName = 'daily_profit';
+                break;
+            default:
+                throw new LogicException("操作失败");
+                break;
+        }
+        $excelHandlerService = $this->container->get('bike.partner.service.excel_handler');
+        $response = $excelHandlerService->getResponse($fileName,$data);
+        return $response;
+    }
+
+
+    private function getMonthProfitData(array $args)
+    {   
+        $result = [];
+        $result['title'] = ['日期','月收益／元'];
+        $result['data'] = [];
+
+        $bikeRevenueLogDao = $this->getRevenueLogDaoByUserRole();
+        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_month', $args, 0, 0, ['log_month' => 'desc'],['log_month']);
+        if ($logList) {
+            foreach ($logList as $log) {
+                $temp = [];
+                $temp[] = $log->getLogMonth();
+                $temp[] = $log->getRevenue();
+                array_push($result['data'], $temp);
+            }
+        }
+        return $result;
+    }
+
+    private function getDailyProfitData(array $args)
+    {
+        $result = [];
+        $result['title'] = ['日期','日收益／元'];
+        $result['data'] = [];
+
+        $bikeRevenueLogDao = $this->getRevenueLogDaoByUserRole();
+
+        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_day', $args, 0, 0, ['log_day' => 'desc'],['log_day']);
+        if ($logList) {
+            foreach ($logList as $log) {
+                $temp = [];
+                $temp[] = $log->getLogDay();
+                $temp[] = $log->getRevenue();
+                array_push($result['data'], $temp);
+            }
+        }
+        return $result; 
+    }
+
 
 	public function getBikeRevenueLogDao()
 	{
 		return $this->container->get('bike.partner.dao.partner.bike_revenue_log');
 	}
 
-    public function getRevenueLogByUserRole()
+    public function getRevenueLogDaoByUserRole()
     {
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $role = $user->getRole();

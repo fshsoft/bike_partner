@@ -18,36 +18,6 @@ use Bike\Partner\Controller\AbstractController;
 class IndexController extends AbstractController
 {
 	/**
-     * @Route("/export/{type}", name="excel_export")
-     */
-    public function exportAction(Request $request,$type)
-    {
-    	$this->denyAccessUnlessGranted(array('ROLE_ADMIN', 'ROLE_AGENT', 'ROLE_CLIENT'), 'role');
-        $this->denyAccessUnlessGranted('export', 'revenue');
-    	try {
-    		$excelHandlerService = $this->get('bike.partner.service.excel_handler');
-
-    		$args = $request->query->all();
-
-    		$user = $this->getUser();
-    		$role = $user->getRole();
-	        if ($role == 'ROLE_AGENT') {
-	            $args['agent_id'] = $user->getId();
-	        }
-	        if ($role == 'ROLE_CLIENT') {
-	        	$args['client_id'] = $user->getId();
-	        }
-    		$response = $excelHandlerService->export($type,$args);
-
-    		return $response;
-    	} catch (\Exception $e) {
-    		return $this->jsonError($e);
-    	}
-        return array();
-    }
-	
-
-	/**
      * @Route("/import/{type}", name="excel_import")
      * @Template("BikePartnerBundle:excelhandler:import.html.twig")
      */
