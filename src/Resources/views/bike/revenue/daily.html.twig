@@ -69,7 +69,7 @@
                           <!-- 角色控制 显示-->
 {% set role = app.user.getRole() %}
 {% if role in ['ROLE_ADMIN','ROLE_AGENT','ROLE_CLIENT'] %}
-                          <a href="{{ path('excel_export',{type:'daily_profit'}) }}" class="btn btn-sm  btn-default export_btn"><i class="fa fa-download"></i>导出</a>
+                          <a href="{{ path('bike_revenue_export',{type:'daily_profit'}) }}" class="btn btn-sm  btn-default export_btn"><i class="fa fa-download"></i>导出</a>
 {% endif %}
                         </div>
 
@@ -77,9 +77,29 @@
                       <!-- /.box-header -->
                       <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
-                          <tbody><tr>
+                          <tbody>
+{% if role == 'ROLE_AGENT' %}
+                            <tr>
+                              <th>日期</th>
+                              <th>总收益</th>
+                              <th>共享收益</th>
+                              <th>单车收益</th>
+                          </tr>
+          {% for v in list.log %}
+                          <tr>
+                            <td>{{ v.getLogDay() }}</td>
+                            <td>{{ v.getRevenue() }}</td>
+                            <td>{{ v.getShareRevenue() }}</td>
+                            <td>
+                              <a href="{{ path('bike_revenue',{log_day:v.getLogDay()}) }}" class="btn btn-xs  btn-primary">{{ v.getBikeRevenue() }}</a>
+
+                            </td>
+                          </tr>
+          {% endfor %}
+{% else %}
+                          <tr>
                             <th>日期</th>
-                            <th>日收益／元</th>
+                            <th>收益／元</th>
                             <th>操作</th>
                           </tr>
           {% for v in list.log %}
@@ -88,11 +108,12 @@
                             <td>{{ v.getRevenue() }}</td>
                              
                             <td>
-                              <a href="{{ path('bike_revenue',{log_day:v.getLogDate()}) }}" class="btn btn-xs  btn-primary"><i class="fa fa-eye"></i>查看</a>
+                              <a href="{{ path('bike_revenue',{log_day:v.getLogDay()}) }}" class="btn btn-xs  btn-primary"><i class="fa fa-eye"></i>查看</a>
 
                             </td>
                           </tr>
           {% endfor %}
+{% endif %}
                         </tbody></table>
                       </div>
                       <!-- /.box-body -->

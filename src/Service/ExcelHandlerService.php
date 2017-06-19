@@ -14,23 +14,8 @@ class ExcelHandlerService extends AbstractService
 {
 
 	/***********导出****** >> ******/
-	public function export($type,array $args)
+	public function getResponse($fileName, &$data)
 	{
-		$data = [];
-		switch ($type) {
-			case 'month_profit':
-				$data = $this->getMonthProfitData($args);
-				$fileName = 'month_profit';
-				break;
-			case 'daily_profit':
-				$data = $this->getDailyProfitData($args);
-				$fileName = 'daily_profit';
-				break;
-			default:
-				throw new LogicException("操作失败");
-				break;
-		}
-
 		$phpExcelObject = $this->container->get('phpexcel')->createPHPExcelObject();
         $phpExcelObject->getProperties()->setCreator("百宝单车")
                 ->setLastModifiedBy("百宝单车")
@@ -82,50 +67,6 @@ class ExcelHandlerService extends AbstractService
 			$i++;
 		}
 
-	}
-
-
-	private function getMonthProfitData(array $args)
-	{	
-		$result = [];
-		$result['title'] = ['日期','月收益／元'];
-		$result['data'] = [];
-
-		$revenueService = $this->container->get('bike.partner.service.bike_revenue');
-
-		$bikeRevenueLogDao = $revenueService->getRevenueLogByUserRole();
-        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_month', $args, 0, 0, ['log_month' => 'desc'],['log_month']);
-        if ($logList) {
-        	foreach ($logList as $log) {
-        		$temp = [];
-        		$temp[] = $log->getLogMonth();
-        		$temp[] = $log->getRevenue();
-        		array_push($result['data'], $temp);
-        	}
-        }
-		return $result;
-	}
-
-	private function getDailyProfitData(array $args)
-	{
-		$result = [];
-		$result['title'] = ['日期','日收益／元'];
-		$result['data'] = [];
-
-		$revenueService = $this->container->get('bike.partner.service.bike_revenue');
-
-		$bikeRevenueLogDao = $revenueService->getRevenueLogByUserRole();
-
-        $logList = $bikeRevenueLogDao->findList('sum(revenue) as revenue,log_day', $args, 0, 0, ['log_day' => 'desc'],['log_day']);
-        if ($logList) {
-        	foreach ($logList as $log) {
-        		$temp = [];
-        		$temp[] = $log->getLogDate();
-        		$temp[] = $log->getRevenue();
-        		array_push($result['data'], $temp);
-        	}
-        }
-		return $result;	
 	}
 	/** << */
 

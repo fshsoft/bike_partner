@@ -109,12 +109,88 @@ class AgentService extends AbstractService
                 $data['parent_ids'] = ',' . $agent->getParentId() . ',' . $agent->getId() . ',';
             }
         }
-
         $agentDao = $this->getAgentDao();
-        $agentConn = $agentDao->getConn();
+        $bikeDao = $this->container->get('bike.partner.dao.partner.bike');
+
+        $oldAgent = $this->getAgent($id);
+        $oldParentId = $oldAgent->getParentId();
+        if ($oldParentId != $data['parent_id']) {
+            switch ($oldAgent->getLevel()) {
+                case Agent::LEVEL_ONE:
+                    //变成二级
+                    if ($data['level'] == Agent::LEVEL_TWO) {
+                        $where = ['parent_ids.like'=>',' . $id . ',%','level'=>Agent::LEVEL_THREE];
+                        $threeLevelAgent = $agentDao->find($where,'id');
+                        if ($threeLevelAgent) {
+                            throw new LogicException("目前系统只支持三级代理商,由于其下有三级代理商,不能变更等级");
+                        }
+                        $childIdArray = $this->getChildAgent();
+                        if (!empty($childIdArray)) {
+                            $agentChildChangeData = [
+                                'parent_ids' => ',' . $data['parent_ids'] . ',' . $id . ',',
+                                'level' => Agent::LEVEL_THREE,
+                            ];
+                            $agentCondition = ['agent_id.in'=>$childIdArray];
+
+                            $allAgent = $childIdArray;
+                            array_push($allAgent,$id);
+                            $bikeCondition = ['agent_id.in'=>$allAgent];
+                        } else {
+                            $bikeCondition = ['agent_id'=>$id];
+                        }
+                    }
+                    //变成三级
+                    if ($data['level'] == Agent::LEVEL_THREE) {
+                        $where = ['parent_id'=>$id];
+                        $twoLevelAgent = $agentDao->find($where,'id');
+                        if ($twoLevelAgent) {
+                            throw new LogicException("目前系统只支持三级代理商,由于其下有二级代理商,不能变更等级");
+                        }
+                        $bikeCondition = ['agent_id'=>$id];
+                    }
+                    break;
+                case Agent::LEVEL_TWO:
+                    if ($data['level'] == Agent::LEVEL_THREE) {
+                        $where = ['parent_id'=>$id];
+                        $threeLevelAgent = $agentDao->find($where,'id');
+                        if ($threeLevelAgent) {
+                            throw new LogicException("目前系统只支持三级代理商,由于其下有三级代理商,不能变更等级");
+                        }
+                        $bikeCondition = ['agent_id'=>$id];
+                    } else {
+                        $childIdArray = $this->getChildAgent();
+                        if (!empty($childIdArray)) {
+                            $agentChildChangeData = [
+                                'parent_ids' => ',' . $data['parent_ids'] . ',' . $id . ',',
+                                'level' => $data['level'] + 1 ,
+                            ];
+                            $agentCondition = ['agent_id.in'=>$childIdArray];
+
+                            $allAgent = $childIdArray;
+                            array_push($allAgent,$id);
+                            $bikeCondition = ['agent_id.in'=>$allAgent];
+                        } else {
+                            $bikeCondition = ['agent_id'=>$id];
+                        }
+                    } 
+                    break;
+                case Agent::LEVEL_THREE:
+                    $bikeCondition = ['agent_id'=>$id];
+                    break;
+                default:
+                    throw new LogicException("数据错误");
+                    break;
+            }
+        }
+
         $passportService = $this->container->get('bike.partner.service.passport');
         $passportDao = $this->container->get('bike.partner.dao.partner.passport');
-        $passportConn = $passportDao->getConn();
+
+        $passportConn = $passportDao->getConn('bike.partner.dao.partner.bike');
+        $agentConn = $agentDao->getConn();
+        $bikeConn = $bikeDao->getConn();
+
+        $bikeConn->beginTransaction();
         $agentConn->beginTransaction();
         $passportConn->beginTransaction();
         try {
@@ -123,11 +199,20 @@ class AgentService extends AbstractService
             $agent = new Agent($data);
             $agentDao->save($agent);
 
+            if ($oldParentId != $data['parent_id']) {
+                if (isset($agentCondition)) {
+                    $agentDao->update($agentCondition,$agentChildChangeData);
+                }
+                $change = ['agent_id'=>$oldParentId];
+                $bikeDao->update($bikeCondition,$change);
+            }
+            $bikeConn->commit();
             $passportConn->commit();
             $agentConn->commit();
         } catch (\Exception $e) {
             $passportConn->rollBack();
             $agentConn->rollBack();
+            $bikeConn->rollBack();
             throw $e;
         }
 

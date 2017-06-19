@@ -70,7 +70,7 @@
                         <div class="box-tools">
 {% set role = app.user.getRole() %}
 {% if role in ['ROLE_ADMIN','ROLE_AGENT','ROLE_CLIENT'] %}
-                          <a href="{{ path('excel_export',{type:'month_profit'}) }}" class="btn btn-sm  btn-default export_btn"><i class="fa fa-download"></i>导出</a>
+                          <a href="{{ path('bike_revenue_export',{type:'month_profit'}) }}" class="btn btn-sm  btn-default export_btn"><i class="fa fa-download"></i>导出</a>
 {% endif %}
                         </div>
 

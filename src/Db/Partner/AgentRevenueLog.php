@@ -11,8 +11,9 @@ class AgentRevenueLog extends AbstractEntity
     protected static $cols = array(
         'id' => null,
         'agent_id' => null,
-        'type' => null,
         'revenue' => 0,
+        'share_revenue' => 0,
+        'bike_revenue' =>0,
         'log_day' => '',
         'log_month' => null,
         'log_time' => null,

@@ -50,10 +50,29 @@
                                 <label for="repwd">确认密码</label>
                                 <input type="password" class="form-control" id="repwd" name="repwd" placeholder="不修改请留白">
                               </div>
+{% set role = app.user.getRole() %}
+{% if role in ['ROLE_ADMIN'] %}
+                              <div class="form-group">
+                                <label for="level">等级</label>
+                                <select name="level" id="level" class="form-control select2" style="width: 100%;" >
+                                    <option value="0">选择等级</option>
+{% set levelMap = bike_parter_agent_levelmap() %}
+  {% for key,name in levelMap %}
+                                    <option {% if key == agent.getLevel() %}selected="selected"{% endif %} value="{{ key }}">{{ name }}</option>
+  {% endfor %}
+                                </select>
+                              </div>
 
+                              <div class="form-group" style="display:none;">
+                                <label for="parent_id">上级代理商</label>
+                                <select name="parent_id" id="parent_id" class="form-control select2" style="width: 100%;" >
+                                    <option value="0">选择上级代理商</option>
+                                </select>
+                              </div>
+{% else %}
                               <input type="hidden" name="level" value="{{ agent.getLevel() }}">
                               <input type="hidden" name="parent_id" value="{{ agent.getParentId() }}">
-
+{% endif %}
                             </div>
                             <!-- /.box-body -->
                   </div>
@@ -134,3 +153,4 @@ $(function(){
 });
 </script>
 {% endblock %}
+
